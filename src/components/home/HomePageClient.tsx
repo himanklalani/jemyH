@@ -109,7 +109,8 @@ function SectionHeading({ label, title, className = '' }: { label: string; title
     return () => obs.disconnect();
   }, []);
 
-  const lines = title.split('\n');
+  // Allow splitting by actual newline, literal '\n', or pipe '|'
+  const lines = title.split(/\\n|\n|\|/);
   let charIndex = 0; // To stagger continuously across multiple lines
 
   return (
@@ -737,7 +738,7 @@ export default function HomePageClient({
       </div>
       
       <FeaturedCollection 
-        title="Sun\nCollection"
+        title={"Sun\nCollection"}
         products={sunglasses} 
         link="/products?category=sunglasses"
       />

@@ -25,8 +25,13 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const { openCart, itemCount } = useCartStore();
   const { region, setRegion } = useRegionStore();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const pathname = usePathname();
+
+  useEffect(() => {
+    setIsAdmin(!!localStorage.getItem('adminToken'));
+  }, []);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -87,6 +92,15 @@ export default function Navbar() {
         </button>
 
         <div className="w-px h-5 bg-black/10 mx-0.5" />
+
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className="group flex items-center justify-center px-4 h-10 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors mr-1"
+          >
+            Admin
+          </Link>
+        )}
 
         {/* Menu button */}
         <button
