@@ -52,3 +52,9 @@ skills-lock.json
 /Boxing_Complete
 /ClashDisplay_Complete
 /FontshareKit-*
+
+# Local Database Seeding & Helper Scripts
+fix-images.ts
+seed-new-products.ts
+update_published.js
+/scripts/
