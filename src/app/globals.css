@@ -1,7 +1,31 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Panchang';
+  src: url('/fonts/Panchang-Semibold.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Quilon';
+  src: url('/fonts/Quilon-Medium.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay-Variable.woff2') format('woff2');
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+}
+
 @theme {
-  --font-clash: var(--font-clash), sans-serif;
+  --font-clash: 'Clash Display', sans-serif;
   --color-platinum-100: #EAEBE6;
   --color-platinum-200: #D9D9D9;
   --color-platinum-text: #EBEBE6;
@@ -28,8 +52,8 @@
   --ease-back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Panchang — wide luxury display / Quilon — humanist serif body */
-  --font-display: var(--font-panchang), sans-serif;
-  --font-sans: var(--font-quilon), sans-serif;
+  --font-display: 'Panchang', sans-serif;
+  --font-sans: 'Quilon', sans-serif;
   --font-mono: var(--font-jetbrains-mono);
 
   --animate-shimmer: shimmer 1.5s infinite;

@@ -18,24 +18,6 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
-const panchang = localFont({
-  src: '../../public/fonts/Panchang-Semibold.woff2',
-  variable: '--font-panchang',
-  display: 'block', // 'block' hides text until loaded to prevent FOUT layout shifts
-});
-
-const quilon = localFont({
-  src: '../../public/fonts/Quilon-Medium.woff2',
-  variable: '--font-quilon',
-  display: 'swap',
-});
-
-const clash = localFont({
-  src: '../../public/fonts/ClashDisplay-Variable.woff2',
-  variable: '--font-clash',
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
   title: "Jemy | Premium Eyewear & Sunglasses",
   description: "Elevating everyday vision through timeless design and superior lens technology.",
@@ -73,7 +55,7 @@ export default function RootLayout({
     <html lang="en" className="h-full" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${jetbrainsMono.variable} ${panchang.variable} ${quilon.variable} ${clash.variable} min-h-[100dvh] w-full overflow-x-clip flex flex-col font-sans antialiased bg-[#EAEBE6]`}
+        className={`${jetbrainsMono.variable} min-h-[100dvh] w-full overflow-x-clip flex flex-col font-sans antialiased bg-[#EAEBE6]`}
       >
         <QueryProvider>
           <SmoothScrollProvider>
