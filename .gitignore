@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Agents and Prompting
+/.agents
+AGENTS.md
+CLAUDE.md
+context.md
+newecomprompt.md
+skills-lock.json
+
+# Unnecessary raw font packs
+/Boxing_Complete
+/ClashDisplay_Complete
+/FontshareKit-*
