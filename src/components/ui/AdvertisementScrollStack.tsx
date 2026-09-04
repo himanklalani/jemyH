@@ -18,18 +18,25 @@ interface AdvertisementScrollStackProps {
 export default function AdvertisementScrollStack({ slides = [] }: AdvertisementScrollStackProps) {
   const displaySlides = slides.length > 0 ? slides : [
     {
-      src: '/images/editorial_1_1787494326577.jpg',
+      src: '/images/lookbook_1.png',
       label: 'Vol 1',
       caption: 'The Vanguard Collection',
       link: '/products',
       ctaText: 'Discover',
     },
     {
-      src: '/images/editorial_3_1787494364240.jpg',
+      src: '/images/titanium_lifestyle_1_1787494228901.png',
       label: 'Vol 2',
       caption: 'Titanium Architecture',
       link: '/products',
       ctaText: 'Explore',
+    },
+    {
+      src: '/images/sun_lifestyle_1_1787494277969.png',
+      label: 'Vol 3',
+      caption: 'Sun Polarized Edition',
+      link: '/products?category=sunglasses',
+      ctaText: 'Shop Sun',
     }
   ];
 
