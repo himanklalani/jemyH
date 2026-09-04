@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Panchang';
+  src: url('/fonts/Panchang-Semibold.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Quilon';
+  src: url('/fonts/Quilon-Medium.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Clash Display';
+  src: url('/fonts/ClashDisplay-Variable.woff2') format('woff2');
+  font-weight: 200 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+@theme {
+  --font-clash: 'Clash Display', sans-serif;
+  --color-platinum-100: #EAEBE6;
+  --color-platinum-200: #D9D9D9;
+  --color-platinum-text: #EBEBE6;
+
+  --color-indigo-900: #1C2740;
+  --color-indigo-950: #151D30;
+  
+  --color-gold-light: #D8BD80;
+  --color-gold-primary: #C0A062;
+  --color-gold-dark: #AC8A4D;
+
+  /* Awwwards Elite Admin Design System (Dark Immersive) */
+  --color-admin-bg: oklch(0.15 0 0);
+  --color-admin-surface: oklch(0.20 0 0);
+  --color-admin-surface-hover: oklch(0.25 0 0);
+  --color-admin-border: oklch(0.9 0 0 / 0.08);
+  --color-admin-text: oklch(0.95 0 0);
+  --color-admin-text-muted: oklch(0.7 0 0);
+  --color-admin-accent: oklch(0.75 0.1 250);
+
+  /* Awwwards Easing */
+  --ease-power4-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-power4-inout: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Panchang — wide luxury display / Quilon — humanist serif body */
+  --font-display: 'Panchang', sans-serif;
+  --font-sans: 'Quilon', sans-serif;
+  --font-mono: var(--font-jetbrains-mono);
+
+  --animate-shimmer: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+:root {
+  --background: #EAEBE6;
+  --foreground: #1C2740;
+  --color-surface: #F4F4F0;
+  --color-border: rgba(28, 39, 64, 0.08);
+  --color-text-muted: rgba(28, 39, 64, 0.55);
+}
+
+/* Fluid Typography Scale (Awwwards standard) */
+:root {
+  --text-hero: clamp(3.5rem, 10vw, 10rem);
+  --text-display: clamp(2.5rem, 6vw, 6rem);
+  --text-heading: clamp(1.75rem, 3vw, 3rem);
+  --text-subheading: clamp(1.125rem, 1.5vw, 1.5rem);
+  --text-body: clamp(1rem, 1.1vw, 1.125rem);
+  --text-label: 0.6875rem;
+
+  /* Boxing is wide/structural — tight tracking at hero sizes gives weight without width bleed */
+  --tracking-hero: -0.04em;
+  --tracking-display: -0.025em;
+  /* Small uppercase labels need breathing room */
+  --tracking-label: 0.12em;
+  /* Quilon serif body: zero tracking per legibility rules */
+  --tracking-body: 0;
+  
+  --leading-hero: 0.92;
+  --leading-heading: 1.15;
+  --leading-body: 1.65;
+
+  --space-section: clamp(6rem, 12vw, 14rem);
+  --space-component: clamp(3rem, 6vw, 6rem);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Luxury Utilities ─── */
+@utility text-gold-gradient {
+  background: linear-gradient(135deg, var(--color-gold-dark) 0%, var(--color-gold-light) 50%, var(--color-gold-dark) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility bg-gold-gradient {
+  background: linear-gradient(135deg, var(--color-gold-dark) 0%, var(--color-gold-light) 50%, var(--color-gold-dark) 100%);
+}
+
+@utility glass-panel {
+  background: rgba(234, 235, 230, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(28, 39, 64, 0.1);
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(28, 39, 64, 0.7);
+    border-bottom: 1px solid rgba(234, 235, 230, 0.1);
+  }
+}
+
+/* ─── Lenis Smooth Scrolling ─── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ─── No Scrollbar ─── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ─── Awwwards Scroll Reveal Base ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Jemy Button Base ─── */
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0.5rem;
+  background: #1C2740;
+  color: #EAEBE6;
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  padding: 1rem 2.5rem;
+  border-radius: 0.5rem;
+  transition: background 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+
+  &:hover {
+    background: #C0A062;
+    color: #1C2740;
+    transform: scale(1.02);
+  }
+}
+
+@utility btn-gold {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 0.5rem;
+  background: #C0A062;
+  color: #1C2740;
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  padding: 1rem 2.5rem;
+  border-radius: 0.5rem;
+  transition: background 0.25s cubic-bezier(0.16,1,0.3,1), transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+
+  &:hover {
+    background: #AC8A4D;
+    transform: scale(1.02);
+  }
+}

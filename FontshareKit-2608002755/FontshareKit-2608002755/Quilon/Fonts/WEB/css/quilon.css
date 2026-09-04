@@ -1,0 +1,22 @@
+/**
+* @license
+*
+* Font Family: Quilon
+* Designed by: Jonny Pinhorn
+* URL: https://www.fontshare.com/fonts/quilon
+* © 2026 Indian Type Foundry
+*
+* Quilon Medium 
+
+*
+*/
+@font-face {
+  font-family: 'Quilon-Medium';
+  src: url('../fonts/Quilon-Medium.woff2') format('woff2'),
+       url('../fonts/Quilon-Medium.woff') format('woff'),
+       url('../fonts/Quilon-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+
