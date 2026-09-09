@@ -5,7 +5,7 @@ import User from '@/models/User';
 import { sendPasswordResetEmail } from '@/lib/brevo';
 import { applyRateLimit } from '@/lib/rateLimit';
 
-// POST /api/auth/forgot-password — Send reset OTP
+// POST /api/auth/forgot-password - Send reset OTP
 export async function POST(req: NextRequest) {
   const limited = await applyRateLimit(req, 'otp');
   if (limited) return limited;

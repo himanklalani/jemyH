@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowRight, SlidersHorizontal, X } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import Link from 'next/link';
 import CatalogFilters from '@/components/catalog/CatalogFilters';
 import CatalogSort from '@/components/catalog/CatalogSort';
@@ -18,6 +18,120 @@ interface Product {
   requiresPrescription?: boolean;
 }
 
+// Quick-filter chip definitions (design-taste-frontend skill: tactile pill chips over generic sidebar)
+const QUICK_FILTERS = [
+  { label: 'All',       param: null,       value: null },
+  { label: 'Sunglasses',param: 'category', value: 'sunglasses' },
+  { label: 'Optical',   param: 'category', value: 'eyeglasses' },
+  { label: 'Titanium',  param: 'material', value: 'titanium' },
+  { label: 'Acetate',   param: 'material', value: 'acetate' },
+  { label: 'Round',     param: 'shape',    value: 'round' },
+  { label: 'Geometric', param: 'shape',    value: 'geometric' },
+  { label: 'Aviator',   param: 'shape',    value: 'aviator' },
+] as const;
+
+// Human-readable labels for active filter dismissal badges
+const FILTER_LABELS: Record<string, Record<string, string>> = {
+  category: { sunglasses: 'Sunglasses', eyeglasses: 'Optical' },
+  shape:    { round: 'Round', square: 'Square', aviator: 'Aviator', 'cat-eye': 'Cat-Eye', geometric: 'Geometric' },
+  material: { acetate: 'Acetate', titanium: 'Titanium', mixed: 'Mixed Media' },
+  size:     { s: 'Narrow (S)', m: 'Medium (M)', l: 'Wide (L)' },
+};
+
+const FILTER_KEYS = ['category', 'shape', 'material', 'size'];
+
+/* ── Quick-filter pill bar ─────────────────────────────────────── */
+function QuickFilterBar() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const handleChip = (param: string | null, value: string | null) => {
+    if (!param) {
+      router.push('/products', { scroll: false });
+      return;
+    }
+    const params = new URLSearchParams(searchParams.toString());
+    params.get(param) === value ? params.delete(param) : params.set(param, value!);
+    params.delete('page');
+    router.push(`/products?${params.toString()}`, { scroll: false });
+  };
+
+  const isAllActive = !Array.from(searchParams.keys()).some(k => FILTER_KEYS.includes(k));
+
+  return (
+    <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label="Quick filters">
+      {QUICK_FILTERS.map(chip => {
+        const isActive = chip.param === null
+          ? isAllActive
+          : searchParams.get(chip.param) === chip.value;
+        return (
+          <button
+            key={chip.label}
+            onClick={() => handleChip(chip.param as string | null, chip.value as string | null)}
+            aria-pressed={isActive}
+            className={`shrink-0 px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 border whitespace-nowrap ${
+              isActive
+                ? 'bg-indigo-900 border-indigo-900 text-white shadow-md'
+                : 'bg-transparent border-indigo-900/15 text-indigo-900/70 hover:border-indigo-900/40 hover:bg-indigo-900/5 hover:text-indigo-900'
+            }`}
+          >
+            {chip.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ── Active filter dismissal badges ───────────────────────────── */
+function ActiveFilterBadges() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const activeFilters: { key: string; value: string; label: string }[] = [];
+  FILTER_KEYS.forEach(key => {
+    const val = searchParams.get(key);
+    if (val) {
+      val.split(',').forEach(v => {
+        activeFilters.push({ key, value: v, label: FILTER_LABELS[key]?.[v] ?? v });
+      });
+    }
+  });
+
+  if (activeFilters.length === 0) return null;
+
+  const removeFilter = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const updated = (params.get(key)?.split(',') ?? []).filter(v => v !== value);
+    updated.length === 0 ? params.delete(key) : params.set(key, updated.join(','));
+    params.delete('page');
+    router.push(`/products?${params.toString()}`, { scroll: false });
+  };
+
+  return (
+    <div className="flex flex-wrap gap-2 items-center" role="group" aria-label="Active filters">
+      {activeFilters.map(f => (
+        <button
+          key={`${f.key}-${f.value}`}
+          onClick={() => removeFilter(f.key, f.value)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-indigo-900/15 text-indigo-900 text-[10px] font-bold uppercase tracking-widest hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200 group"
+          aria-label={`Remove filter: ${f.label}`}
+        >
+          {f.label}
+          <X size={10} className="opacity-50 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+        </button>
+      ))}
+      <button
+        onClick={() => router.push('/products', { scroll: false })}
+        className="text-[10px] font-bold uppercase tracking-widest text-indigo-900/40 hover:text-red-500 transition-colors ml-1"
+      >
+        Clear all
+      </button>
+    </div>
+  );
+}
+
+/* ── Catalog grid ─────────────────────────────────────────────── */
 function CatalogGrid() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -55,13 +169,20 @@ function CatalogGrid() {
 
   return (
     <>
-
-
-      {/* Count */}
-      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-10 pb-4">
-        <p className="text-[11px] uppercase tracking-widest text-indigo-900/40 font-semibold">
-          {loading ? 'Loading…' : `${total} frame${total !== 1 ? 's' : ''} found`}
-        </p>
+      {/* Count + active badges - aria-live="polite" announces filter result changes to screen readers */}
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-6 pb-2">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p
+            className="text-[11px] uppercase tracking-widest text-indigo-900/40 font-semibold"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {loading ? 'Loading\u2026' : `${total} frame${total !== 1 ? 's' : ''} found`}
+          </p>
+          <Suspense>
+            <ActiveFilterBadges />
+          </Suspense>
+        </div>
       </div>
 
       {/* Grid */}
@@ -79,7 +200,7 @@ function CatalogGrid() {
         ) : products.length === 0 ? (
           <div className="py-32 flex flex-col items-center justify-center text-center">
             <p className="font-display font-bold text-3xl text-indigo-900 mb-3 text-balance">No frames match.</p>
-            <p className="text-indigo-900/50 text-sm mb-6 text-pretty max-w-[65ch] mx-auto">Try adjusting or clearing your filters.</p>
+            <p className="text-indigo-900/50 text-sm mb-6 max-w-[65ch] mx-auto" style={{ textWrap: 'pretty' } as React.CSSProperties}>Try adjusting or clearing your filters.</p>
             <button onClick={clearAllFilters} className="inline-flex items-center gap-2 bg-indigo-900 text-platinum-100 text-[11px] font-bold uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-gold-primary hover:text-indigo-900 transition-all">
               Clear Filters
             </button>
@@ -106,19 +227,22 @@ function CatalogGrid() {
                         <img
                           src={product.images[0]}
                           alt={product.name}
+                          decoding="async"
                           className="w-full h-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
                         />
                         {product.images[1] && (
                           <img
                             src={product.images[1]}
                             alt=""
+                            aria-hidden="true"
+                            decoding="async"
                             className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                           />
                         )}
                       </>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <span className="font-display font-bold text-6xl text-indigo-900/10">J</span>
+                        <span className="font-display font-bold text-6xl text-indigo-900/10" aria-hidden="true">J</span>
                       </div>
                     )}
 
@@ -145,11 +269,12 @@ function CatalogGrid() {
                       <p className="text-[11px] uppercase tracking-widest text-indigo-900/50 mt-1 capitalize font-mono">{product.category}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-sm font-semibold text-indigo-900 font-mono tabular-nums">
-                        {product.pricing?.US ? `$${product.pricing.US.amount}` : product.pricing?.IN ? `₹${product.pricing.IN.amount}` : '—'}
+                      {/* tabular-nums: better-typography rule 11 - prevents price layout shift */}
+                      <p className="text-sm font-semibold text-indigo-900 font-mono" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                        {product.pricing?.US ? `$${product.pricing.US.amount}` : product.pricing?.IN ? `\u20b9${product.pricing.IN.amount}` : '-'}
                       </p>
                       {product.pricing?.US?.compareAtAmount && (
-                        <p className="text-xs text-indigo-900/35 line-through font-mono tabular-nums">${product.pricing.US.compareAtAmount}</p>
+                        <p className="text-xs text-indigo-900/35 line-through font-mono" style={{ fontVariantNumeric: 'tabular-nums' }}>${product.pricing.US.compareAtAmount}</p>
                       )}
                     </div>
                   </div>
@@ -163,19 +288,20 @@ function CatalogGrid() {
   );
 }
 
+/* ── Page ─────────────────────────────────────────────────────── */
 export default function ProductsCatalogPage() {
   return (
     <div className="w-full min-h-screen bg-[#EAEBE6] pt-[68px]">
 
       {/* Page Header */}
-      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-16 pb-12">
+      <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-16 pb-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-gold-primary mb-4">Jemy Collection</p>
-          <div className="flex items-end justify-between flex-wrap gap-4">
+          <div className="flex items-end justify-between flex-wrap gap-4 mb-8">
             <h1
               className="font-display font-bold text-indigo-900 leading-none tracking-[-0.025em] text-balance"
               style={{ fontSize: 'var(--text-display)' }}
@@ -195,6 +321,11 @@ export default function ProductsCatalogPage() {
               </Suspense>
             </div>
           </div>
+
+          {/* Quick-filter pill bar - 1-tap shortcuts to most-used facets */}
+          <Suspense>
+            <QuickFilterBar />
+          </Suspense>
         </motion.div>
       </div>
 

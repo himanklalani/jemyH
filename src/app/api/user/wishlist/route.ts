@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/user/wishlist — Add product
+// POST /api/user/wishlist - Add product
 export async function POST(req: NextRequest) {
   const auth = await protect(req);
   if (auth instanceof NextResponse) return auth;
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE /api/user/wishlist — Remove product
+// DELETE /api/user/wishlist - Remove product
 export async function DELETE(req: NextRequest) {
   const auth = await protect(req);
   if (auth instanceof NextResponse) return auth;
@@ -58,7 +58,7 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-// PUT /api/user/wishlist — Toggle (add if absent, remove if present)
+// PUT /api/user/wishlist - Toggle (add if absent, remove if present)
 export async function PUT(req: NextRequest) {
   const auth = await protect(req);
   if (auth instanceof NextResponse) return auth;

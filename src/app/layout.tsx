@@ -11,7 +11,7 @@ import SmoothScrollProvider from "@/providers/SmoothScrollProvider";
 import QueryProvider from "@/providers/QueryProvider";
 import Preloader from "@/components/layout/Preloader";
 
-// JetBrains Mono — precision data / prices / labels
+// JetBrains Mono - precision data / prices / labels
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
@@ -59,11 +59,18 @@ export default function RootLayout({
       >
         <QueryProvider>
           <SmoothScrollProvider>
+            {/* Skip to content - visible on focus for keyboard users (awwwards rule 8 + WCAG 2.1 §2.4.1) */}
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[999] focus:bg-gold-primary focus:text-indigo-950 focus:px-6 focus:py-3 focus:rounded-full focus:font-bold focus:text-[11px] focus:uppercase focus:tracking-widest focus:shadow-2xl"
+            >
+              Skip to content
+            </a>
             <Preloader />
             <Navbar />
             <Breadcrumbs />
             <CartDrawer />
-            <main className="flex-1">
+            <main id="main-content" tabIndex={-1} className="flex-1">
               {children}
             </main>
             <Footer />

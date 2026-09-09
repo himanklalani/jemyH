@@ -51,6 +51,8 @@ interface Product {
 function InfiniteMarquee({ items, speed = 40, direction = -1 }: { items: (string | { img: string })[]; speed?: number, direction?: 1 | -1 }) {
   const track = useRef<HTMLDivElement>(null);
   useGSAP(() => {
+    // Respect prefers-reduced-motion (awwwards rule 8)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     gsap.fromTo(track.current, 
       { xPercent: direction === -1 ? 0 : -50 },
       {
@@ -115,7 +117,13 @@ function SectionHeading({ label, title, className = '' }: { label: string; title
 
   return (
     <div ref={ref} className={className}>
-      <h2 className="font-display font-bold uppercase leading-[0.9] tracking-[-0.03em] text-[var(--theme-text)] flex flex-wrap" style={{ fontSize: 'clamp(1.25rem, 8vw, 4rem)' }}>
+      {/* sr-only: full title text for screen readers (animated spans break AT) */}
+      <span className="sr-only">{title.replace(/\\n|\n|\|/g, ' ')}</span>
+      <h2
+        aria-hidden="true"
+        className="font-display font-bold uppercase leading-[0.9] tracking-[-0.03em] text-[var(--theme-text)] flex flex-wrap"
+        style={{ fontSize: 'clamp(1.25rem, 8vw, 4rem)' }}
+      >
         {lines.map((line, lineIndex) => (
           <span key={lineIndex} className="block flex flex-wrap w-full">
             {line.split('').map((char, i) => {
@@ -425,13 +433,15 @@ function ManifestoSection() {
                 </span>
               ))}
             </h2>
-            <p className="text-[var(--theme-text)]/60 text-lg leading-relaxed mb-12 max-w-[65ch] text-pretty">
-              Every Jemy frame is the result of months of material research, ergonomic testing, 
-              <span className="inline-block align-middle mx-2 w-14 h-6 rounded-full overflow-hidden border border-[var(--theme-text)]/20">
-                <img src="/images/lookbook_1.png" alt="" className="w-full h-full object-cover grayscale opacity-80" />
-              </span>
-              and lens-optical calibration. We craft instruments for vision.
-            </p>
+            <div className="space-y-4 mb-10 max-w-[56ch]">
+              <p className="text-[var(--theme-text)]/70 text-lg md:text-xl font-normal leading-relaxed" style={{ textWrap: 'pretty' } as React.CSSProperties}>
+                Every Jemy frame is the result of months of material research, ergonomic testing, and precision lens-optical calibration.
+              </p>
+              <p className="text-gold-primary text-xs md:text-sm font-semibold uppercase tracking-[0.2em] flex items-center gap-3 pt-1">
+                <span className="w-8 h-px bg-gold-primary/50 inline-block" />
+                We craft instruments for vision
+              </p>
+            </div>
             <Link
               href="/products"
               className="inline-flex items-center gap-3 border border-[var(--theme-text)]/20 text-[var(--theme-text)] text-[12px] font-bold uppercase tracking-[0.15em] px-10 py-5 rounded-full hover:border-gold-primary hover:text-gold-primary transition-all duration-300 bg-[var(--theme-bg)]"
@@ -488,7 +498,7 @@ function ShopByGeometry({ onQuizOpen }: { onQuizOpen: () => void }) {
   return (
     <section ref={container} className="py-16 md:py-32 max-w-[1600px] mx-auto px-6 lg:px-12">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-16">
-        <SectionHeading label="02 — Architecture" title={"Frame\nGeometry"} />
+        <SectionHeading label="02 - Architecture" title={"Frame\nGeometry"} />
         <button 
           onClick={onQuizOpen} 
           className="relative mt-6 md:mt-0 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--theme-text)]/70 hover:text-[var(--theme-text)] transition-colors group"
@@ -721,7 +731,7 @@ export default function HomePageClient({
             'UV400 Standard Protection',
             { img: '/images/lookbook_2.png' },
             'Titanium Construction',
-            'Jemy — See Different',
+            'Jemy - See Different',
             { img: '/images/category_optical.png' },
             'Handcrafted Details',
           ]} 

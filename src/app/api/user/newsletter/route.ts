@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// POST /api/user/newsletter — basic newsletter signup stub
+// POST /api/user/newsletter - basic newsletter signup stub
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();

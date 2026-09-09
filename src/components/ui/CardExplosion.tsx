@@ -158,7 +158,7 @@ export default function CardExplosion() {
   return (
     <>
       {/* ══════════════════════════════════════════════════
-          MOBILE LAYOUT — clean static section, no GSAP pin
+          MOBILE LAYOUT - clean static section, no GSAP pin
           ══════════════════════════════════════════════════ */}
       <section
         className="md:hidden py-16 px-5"
@@ -166,7 +166,7 @@ export default function CardExplosion() {
       >
         {/* Label + Headline */}
         <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold-primary mb-3">
-          01 — Collection
+          01 - Collection
         </p>
         <h2
           className="font-display font-bold uppercase leading-[0.88] tracking-[-0.04em] text-[var(--theme-text)] mb-8 break-words hyphens-auto"
@@ -175,7 +175,7 @@ export default function CardExplosion() {
           See the<br />World<br />Differently.
         </h2>
 
-        {/* Hero card — full width */}
+        {/* Hero card - full width */}
         <Link href="/products" className="group block relative w-full rounded-[1.5rem] overflow-hidden mb-3" style={{ height: '55vw', minHeight: 220 }}>
           <img src="/images/hero_bg.png" alt="Signature" className="w-full h-full object-cover transition-transform duration-700 group-active:scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
@@ -211,7 +211,7 @@ export default function CardExplosion() {
       </section>
 
       {/* ══════════════════════════════════════════════════
-          DESKTOP LAYOUT — full GSAP scroll pin explosion
+          DESKTOP LAYOUT - full GSAP scroll pin explosion
           ══════════════════════════════════════════════════ */}
       <div ref={wrapperRef} className="relative hidden md:block">
         {/* pinned stage */}
@@ -242,7 +242,7 @@ export default function CardExplosion() {
             className="absolute left-0 top-0 h-full flex flex-col justify-center pl-20 z-20 max-w-[38%] pointer-events-none"
           >
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-gold-primary mb-6">
-              01 — Collection
+              01 - Collection
             </p>
             <h2
               className="font-display font-bold uppercase leading-[0.88] tracking-[-0.04em] text-[var(--theme-text)] mb-10"
@@ -312,7 +312,7 @@ function CardItem({
   return (
     <Link href={card.href} className="group block select-none">
       <div className="flex flex-col items-center gap-4">
-        {/* Category badge — revealed by GSAP */}
+        {/* Category badge - revealed by GSAP */}
         <span
           ref={badgeRef}
           className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-[var(--theme-text)]/20 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--theme-text)]/70 bg-[var(--theme-bg)]/80 backdrop-blur-sm"

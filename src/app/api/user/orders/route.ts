@@ -3,7 +3,7 @@ import dbConnect from '@/lib/mongoose';
 import Order from '@/models/Order';
 import { protect } from '@/lib/protect';
 
-// GET /api/user/orders — returns all orders for the authenticated user
+// GET /api/user/orders - returns all orders for the authenticated user
 export async function GET(req: NextRequest) {
   const auth = await protect(req);
   if (auth instanceof NextResponse) return auth;

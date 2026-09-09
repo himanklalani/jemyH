@@ -109,7 +109,7 @@ export default function StackedGlassDeck({ cards = [] }: { cards?: any[] }) {
       >
         <div className="absolute top-20 md:top-24 z-50 text-center pointer-events-none px-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold-primary mb-4">
-            03 — Silhouettes
+            03 - Silhouettes
           </p>
           <h2 className="font-display font-bold uppercase leading-[0.9] tracking-[-0.03em] text-[var(--theme-text)] text-4xl md:text-5xl mb-6">
             Frame Archive

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -26,6 +26,9 @@ export default function Navbar() {
   const { openCart, itemCount } = useCartStore();
   const { region, setRegion } = useRegionStore();
   const [isAdmin, setIsAdmin] = useState(false);
+  // Ref to return focus to the trigger button when menu closes (WCAG 2.1 focus management)
+  const menuTriggerRef = useRef<HTMLButtonElement>(null);
+  const menuCloseRef = useRef<HTMLButtonElement>(null);
 
   const pathname = usePathname();
 
@@ -35,11 +38,14 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { setIsOpen(false); setSearchOpen(false); }
+      if (e.key === 'Escape') {
+        if (isOpen) { setIsOpen(false); menuTriggerRef.current?.focus(); }
+        if (searchOpen) setSearchOpen(false);
+      }
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, []);
+  }, [isOpen, searchOpen]);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
@@ -63,7 +69,7 @@ export default function Navbar() {
         </Link>
       </motion.div>
 
-      {/* ─── PILL — always rendered, fades with isOpen ─── */}
+      {/* ─── PILL - always rendered, fades with isOpen ─── */}
       <motion.div
         animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
         transition={{ duration: 0.22, ease: 'easeOut' }}
@@ -73,7 +79,7 @@ export default function Navbar() {
         <button
           onClick={() => setSearchOpen(true)}
           className="w-10 h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
-          aria-label="Search"
+          aria-label="Open search"
         >
           <Search size={17} />
         </button>
@@ -81,11 +87,11 @@ export default function Navbar() {
         <button
           onClick={openCart}
           className="relative w-10 h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
-          aria-label="Cart"
+          aria-label={itemCount > 0 ? `Shopping bag, ${itemCount} item${itemCount !== 1 ? 's' : ''}` : 'Shopping bag'}
         >
           <ShoppingBag size={17} />
           {itemCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-gold-primary text-indigo-950 text-[8px] font-bold flex items-center justify-center rounded-full">
+            <span aria-hidden="true" className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-gold-primary text-indigo-950 text-[8px] font-bold flex items-center justify-center rounded-full">
               {itemCount}
             </span>
           )}
@@ -102,13 +108,33 @@ export default function Navbar() {
           </Link>
         )}
 
+        {/* Desktop quick-category links - 1-click access to top collections */}
+        <div className="hidden lg:flex items-center gap-1 mr-1">
+          <Link
+            href="/products?category=sunglasses"
+            className="px-3 h-10 flex items-center text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-950/60 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
+          >
+            Sun
+          </Link>
+          <Link
+            href="/products?category=eyeglasses"
+            className="px-3 h-10 flex items-center text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-950/60 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
+          >
+            Optical
+          </Link>
+          <div className="w-px h-5 bg-black/10 mx-0.5" />
+        </div>
+
         {/* Menu button */}
         <button
+          ref={menuTriggerRef}
           onClick={() => setIsOpen(true)}
+          aria-expanded={isOpen}
+          aria-haspopup="dialog"
           className="group flex items-center gap-2.5 px-5 h-10 rounded-full bg-indigo-950 text-white transition-all duration-400 hover:bg-gold-primary hover:text-indigo-950"
-          aria-label="Open menu"
+          aria-label="Open navigation menu"
         >
-          <div className="flex flex-col gap-[4.5px] w-4">
+          <div className="flex flex-col gap-[4.5px] w-4" aria-hidden="true">
             <span className="block h-[1.5px] w-full bg-current rounded-full transition-all duration-300 group-hover:w-3/4" />
             <span className="block h-[1.5px] w-3/4 bg-current rounded-full transition-all duration-300 group-hover:w-full" />
           </div>
@@ -139,17 +165,21 @@ export default function Navbar() {
               exit={{ opacity: 0, y: -8, scale: 0.985 }}
               transition={{ duration: 0.32, ease }}
               className="fixed top-4 md:top-6 right-4 md:right-6 z-50 w-[95vw] md:w-[90vw] max-w-[700px] bg-[#0c0c0c] rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/[0.07]"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site navigation"
             >
               {/* Top bar */}
               <div className="flex items-center justify-between px-8 py-5 border-b border-white/[0.06]">
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Navigation</span>
                 <div className="flex items-center gap-6">
-                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Jemy™</span>
+                  <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Jemy&#x2122;</span>
                   <motion.button
+                    ref={menuCloseRef}
                     initial={{ opacity: 0, rotate: -45 }}
                     animate={{ opacity: 1, rotate: 0 }}
                     transition={{ delay: 0.15, duration: 0.35, ease }}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => { setIsOpen(false); menuTriggerRef.current?.focus(); }}
                     className="w-8 h-8 flex items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all"
                     aria-label="Close menu"
                   >
@@ -231,7 +261,7 @@ export default function Navbar() {
                       onClick={() => setRegion(region === 'US' ? 'IN' : 'US')}
                       className="w-full text-left font-mono text-[11px] text-white/30 hover:text-white/60 transition-colors"
                     >
-                      Region: {region === 'US' ? '🇺🇸 USD' : '🇮🇳 INR'} — swap
+                      Region: {region === 'US' ? '🇺🇸 USD' : '🇮🇳 INR'} - swap
                     </button>
                     <Link
                       href="/products"
@@ -263,6 +293,7 @@ export default function Navbar() {
             <button
               onClick={() => setSearchOpen(false)}
               className="absolute top-8 right-8 text-indigo-900/40 hover:text-indigo-900 transition-colors"
+              aria-label="Close search"
             >
               <X size={22} strokeWidth={1.5} />
             </button>

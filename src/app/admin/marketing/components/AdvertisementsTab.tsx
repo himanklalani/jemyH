@@ -64,7 +64,7 @@ export default function AdvertisementsTab() {
   };
 
   const handleDelete = async (id: string) => {
-    // Safety check — warn if this ad is the only active popup
+    // Safety check - warn if this ad is the only active popup
     const r = await fetch(`/api/admin/advertisements`);
     if (!confirm('Delete this advertisement?')) return;
     await fetch(`/api/admin/advertisements/${id}`, { method: 'DELETE', headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }});

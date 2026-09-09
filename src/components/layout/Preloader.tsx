@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
@@ -11,6 +11,24 @@ export default function Preloader() {
 
   if (pathname?.startsWith('/admin')) return null;
 
+  // Skip preloader - high-intent / keyboard users should not be gated (awwwards rule 8)
+  const skip = useCallback(() => {
+    setIsLoading(false);
+    sessionStorage.setItem('jemy_preloader_seen', 'true');
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }, []);
+
+  // Keyboard shortcut: Esc or Space skips the preloader
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' || e.key === ' ') skip();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [skip]);
+
+  // Main preloader timer + counter animation
   useEffect(() => {
     // Disable preloader on admin pages
     if (pathname?.startsWith('/admin')) {
@@ -29,24 +47,21 @@ export default function Preloader() {
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
 
-    // Fast counter animation (Slowed down)
+    // Randomised counter animation
     const interval = setInterval(() => {
       setCounter((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           return 100;
         }
-        // Slower randomized jump for a longer "loading" feel
         return Math.min(prev + Math.floor(Math.random() * 5) + 1, 100);
       });
     }, 90);
 
-    // Unmount after counter finishes (approx 4.5s total)
+    // Unmount after counter finishes (~3.1s)
     const timeout = setTimeout(() => {
       setIsLoading(false);
-      // Mark as seen only when it actually finishes (fixes StrictMode bug)
       sessionStorage.setItem('jemy_preloader_seen', 'true');
-      // Unlock scroll
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
       window.scrollTo(0, 0);
@@ -65,9 +80,12 @@ export default function Preloader() {
       {isLoading && (
         <motion.div
           initial={{ y: 0 }}
-          exit={{ y: "-100%" }}
+          exit={{ y: '-100%' }}
           transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[200] pointer-events-auto"
+          className="fixed inset-0 z-[200] pointer-events-auto cursor-pointer"
+          onClick={skip}
+          role="presentation"
+          aria-hidden="true"
         >
           {/* HUD Elements */}
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-between py-12 pointer-events-none">
@@ -76,9 +94,14 @@ export default function Preloader() {
               <span>{counter}%</span>
             </div>
 
-            <div className="w-full px-12 flex justify-between text-white/40 font-mono text-[10px] uppercase tracking-widest">
-              <span>Est. 2026</span>
-              <span>Atelier</span>
+            <div className="w-full px-12 flex justify-between items-end">
+              <div className="text-white/40 font-mono text-[10px] uppercase tracking-widest">
+                <span>Est. 2026</span>
+              </div>
+              <div className="flex flex-col items-end gap-2">
+                <span className="text-white/25 font-mono text-[9px] uppercase tracking-widest">Click or press Esc to skip</span>
+                <span className="text-white/40 font-mono text-[10px] uppercase tracking-widest">Atelier</span>
+              </div>
             </div>
           </div>
 
@@ -86,10 +109,9 @@ export default function Preloader() {
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             <defs>
               <mask id="jemy-text-mask">
-                {/* White covers everything, meaning the blue background is visible */}
+                {/* White covers everything - the dark background shows through */}
                 <rect width="100%" height="100%" fill="white" />
-                
-                {/* Black text means it will be cut out (transparent), revealing the hero video beneath */}
+                {/* Black text is cut out (transparent), revealing the hero video beneath */}
                 <motion.text
                   x="50%"
                   y="50%"
@@ -108,11 +130,11 @@ export default function Preloader() {
             </defs>
 
             {/* The solid preloader background */}
-            <rect 
-              width="100%" 
-              height="100%" 
-              fill="#1C2740" 
-              mask="url(#jemy-text-mask)" 
+            <rect
+              width="100%"
+              height="100%"
+              fill="#1C2740"
+              mask="url(#jemy-text-mask)"
             />
           </svg>
         </motion.div>

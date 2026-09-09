@@ -161,10 +161,13 @@ export default function CatalogFilters() {
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#EAEBE6] z-[101] shadow-2xl flex flex-col border-l border-indigo-900/10"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="filters-heading"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-indigo-900/10">
-                <h2 className="font-display font-bold text-2xl text-indigo-900 uppercase tracking-tight">Filters</h2>
+                <h2 id="filters-heading" className="font-display font-bold text-2xl text-indigo-900 uppercase tracking-tight">Filters</h2>
                 <button 
                   onClick={() => setIsOpen(false)}
                   className="w-10 h-10 rounded-full bg-indigo-900/5 hover:bg-indigo-900/10 flex items-center justify-center text-indigo-900 transition-colors"
@@ -173,8 +176,8 @@ export default function CatalogFilters() {
                 </button>
               </div>
 
-              {/* Scrollable Facets */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-8">
+              {/* Scrollable Facets - data-lenis-prevent stops Lenis from capturing wheel events inside the drawer */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-8" data-lenis-prevent>
                 {FILTER_CONFIG.map(group => (
                   <div key={group.id}>
                     <h3 className="text-[11px] font-bold uppercase tracking-widest text-indigo-900/50 mb-4">
@@ -187,6 +190,7 @@ export default function CatalogFilters() {
                           <button
                             key={option.id}
                             onClick={() => toggleOption(group.id, option.id)}
+                            aria-pressed={isSelected}
                             className={`px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-widest transition-all duration-300 border ${
                               isSelected 
                                 ? 'bg-indigo-900 border-indigo-900 text-white shadow-md' 

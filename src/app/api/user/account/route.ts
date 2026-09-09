@@ -5,7 +5,7 @@ import Order from '@/models/Order';
 import Cart from '@/models/Cart';
 import { protect } from '@/lib/protect';
 
-// DELETE /api/user/account — GDPR/CCPA self-serve account deletion
+// DELETE /api/user/account - GDPR/CCPA self-serve account deletion
 export async function DELETE(req: NextRequest) {
   const auth = await protect(req);
   if (auth instanceof NextResponse) return auth;

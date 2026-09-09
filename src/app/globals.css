@@ -51,7 +51,7 @@
   --ease-power4-inout: cubic-bezier(0.76, 0, 0.24, 1);
   --ease-back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* Panchang — wide luxury display / Quilon — humanist serif body */
+  /* Panchang - wide luxury display / Quilon - humanist serif body */
   --font-display: 'Panchang', sans-serif;
   --font-sans: 'Quilon', sans-serif;
   --font-mono: var(--font-jetbrains-mono);
@@ -82,7 +82,7 @@
   --text-body: clamp(1rem, 1.1vw, 1.125rem);
   --text-label: 0.6875rem;
 
-  /* Boxing is wide/structural — tight tracking at hero sizes gives weight without width bleed */
+  /* Boxing is wide/structural - tight tracking at hero sizes gives weight without width bleed */
   --tracking-hero: -0.04em;
   --tracking-display: -0.025em;
   /* Small uppercase labels need breathing room */
@@ -165,6 +165,74 @@ html.lenis, html.lenis body {
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ─── Reduced Motion: WCAG 2.1 §2.3.3 (awwwards skill rule 8) ─── */
+/* Marquees, scrubs, and zooms pause; reveals still play but instantly */
+@media (prefers-reduced-motion: reduce) {
+  /* Freeze all CSS animations (continuous marquees, shimmer, etc.) */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Reveal sections: still become visible, just instantly */
+  .reveal {
+    opacity: 1;
+    transform: translateY(0);
+    transition: none;
+  }
+
+  /* Lenis: disable its smooth scrolling override in reduced-motion mode */
+  html.lenis {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Focus-Visible System (keyboard accessibility) ─── */
+/* Gold ring replaces browser default blue - matches Jemy brand */
+:focus-visible {
+  outline: 2px solid var(--color-gold-primary);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Specific overrides for pill/rounded elements */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-gold-primary);
+  outline-offset: 3px;
+}
+
+/* ─── Screen-Reader Only Utility ─── */
+/* Used by SectionHeading and animated elements to provide full text to AT */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Make sr-only elements visible when focused (for skip links) */
+.sr-only.focus\:not-sr-only:focus,
+.sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: revert;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
 }
 
 /* ─── Jemy Button Base ─── */

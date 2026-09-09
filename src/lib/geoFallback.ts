@@ -22,7 +22,7 @@ async function getRedis() {
 
 export async function resolveRegionFromIP(ip: string): Promise<'US' | 'IN'> {
   if (!ip || ip === '127.0.0.1' || ip === '::1') {
-    // Local dev — return fallback silently
+    // Local dev - return fallback silently
     return FALLBACK_REGION;
   }
 
@@ -39,7 +39,7 @@ export async function resolveRegionFromIP(ip: string): Promise<'US' | 'IN'> {
   try {
     const apiKey = process.env.GEOIP_FALLBACK_API_KEY;
     if (!apiKey) {
-      console.warn('[geoFallback] GEOIP_FALLBACK_API_KEY not set — defaulting to IN');
+      console.warn('[geoFallback] GEOIP_FALLBACK_API_KEY not set - defaulting to IN');
       return FALLBACK_REGION;
     }
 

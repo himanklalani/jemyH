@@ -72,7 +72,7 @@ export async function sendOrderConfirmationEmail(
 ) {
   await sendEmail({
     to: [{ email, name }],
-    subject: `Order Confirmed — ${orderId}`,
+    subject: `Order Confirmed - ${orderId}`,
     htmlContent: `
       <div style="font-family:sans-serif;max-width:480px;margin:auto">
         <h2 style="color:#111">Your order is confirmed!</h2>
@@ -94,7 +94,7 @@ export async function sendPrescriptionStatusEmail(
   const isVerified = status === 'verified';
   await sendEmail({
     to: [{ email, name }],
-    subject: `Prescription ${isVerified ? 'Verified' : 'Requires Attention'} — Order ${orderId}`,
+    subject: `Prescription ${isVerified ? 'Verified' : 'Requires Attention'} - Order ${orderId}`,
     htmlContent: `
       <div style="font-family:sans-serif;max-width:480px;margin:auto">
         <h2 style="color:#111">Prescription Update</h2>
@@ -117,7 +117,7 @@ export async function sendShippingUpdateEmail(
 ) {
   await sendEmail({
     to: [{ email, name }],
-    subject: `Your Jemy order is on its way! — ${orderId}`,
+    subject: `Your Jemy order is on its way! - ${orderId}`,
     htmlContent: `
       <div style="font-family:sans-serif;max-width:480px;margin:auto">
         <h2 style="color:#111">Your order is shipped!</h2>

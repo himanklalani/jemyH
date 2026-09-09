@@ -12,7 +12,7 @@ function getRateLimiters() {
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
   if (!url || !token || url.includes('your-upstash-url') || token.includes('your_upstash')) {
-    console.warn('[rateLimit] Upstash env vars missing or placeholder — rate limiting is disabled');
+    console.warn('[rateLimit] Upstash env vars missing or placeholder - rate limiting is disabled');
     return null;
   }
 
