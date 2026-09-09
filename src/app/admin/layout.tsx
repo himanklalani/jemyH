@@ -10,17 +10,13 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[var(--color-admin-bg)] text-[var(--color-admin-text)] selection:bg-[var(--color-gold-primary)] selection:text-[var(--color-indigo-950)]">
-      <AdminSidebar />
-      <AdminHeader />
-      {/* 
-        The lg:ml-64 offset aligns the main content to the right of the fixed sidebar on desktop.
-        On mobile, the sidebar is an overlay, so main takes full width.
-      */}
-      <main className="min-h-[calc(100vh-5rem)] lg:ml-64 transition-all duration-300">
-        <AdminAuthGuard>
+      <AdminAuthGuard>
+        <AdminSidebar />
+        <AdminHeader />
+        <main className="min-h-[calc(100vh-5rem)] lg:ml-64 transition-all duration-300">
           {children}
-        </AdminAuthGuard>
-      </main>
+        </main>
+      </AdminAuthGuard>
     </div>
   );
 }

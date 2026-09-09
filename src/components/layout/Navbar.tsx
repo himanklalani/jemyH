@@ -42,11 +42,6 @@ export default function Navbar() {
         return;
       }
 
-      // Optimistic check from local admin token
-      if (localStorage.getItem('adminToken') && isMounted) {
-        setIsAdmin(true);
-      }
-
       try {
         const res = await fetch('/api/user/profile', {
           headers: { Authorization: `Bearer ${token}` },
@@ -60,7 +55,7 @@ export default function Navbar() {
           }
         }
       } catch {
-        // network issue - keep optimistic state if token exists
+        // network issue
       }
 
       // If database verification confirms user is not admin
