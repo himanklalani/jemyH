@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -36,6 +37,8 @@ export default function AdminLoginPage() {
 
       // Store JWT token securely (for admin we use localStorage to pass via Bearer headers)
       localStorage.setItem('adminToken', data.accessToken);
+      localStorage.setItem('jemy_token', data.accessToken);
+      window.dispatchEvent(new Event('auth-change'));
       router.push('/admin');
     } catch (err: any) {
       setError(err.message);
@@ -45,7 +48,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="absolute inset-0 bg-[var(--color-admin-bg)] flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-[var(--color-admin-bg)] flex items-center justify-center z-50 p-4">
       
       {/* Background Decor */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -53,8 +56,15 @@ export default function AdminLoginPage() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[30vw] h-[30vw] rounded-full bg-[var(--color-admin-accent)] opacity-10 blur-[100px]"></div>
       </div>
 
-      <div className="relative z-10 w-full max-w-md p-10 bg-[var(--color-admin-surface)] border border-[var(--color-admin-border)] rounded-2xl shadow-2xl backdrop-blur-xl">
-        <div className="text-center mb-10">
+      <div className="relative z-10 w-full max-w-md p-8 md:p-10 bg-[var(--color-admin-surface)] border border-[var(--color-admin-border)] rounded-2xl shadow-2xl backdrop-blur-xl">
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-1.5 text-xs text-[var(--color-admin-text-muted)] hover:text-[var(--color-gold-primary)] transition-colors mb-6"
+        >
+          <ArrowLeft size={14} /> Return to Store
+        </Link>
+
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-serif text-[var(--color-gold-primary)] tracking-tight mb-2">JEMY.</h1>
           <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide uppercase">Admin Portal</p>
         </div>

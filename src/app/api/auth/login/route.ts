@@ -28,6 +28,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
     }
 
+    if (user.isSuspended) {
+      return NextResponse.json({ success: false, message: 'Account is suspended' }, { status: 403 });
+    }
+
     const accessToken = generateAccessToken(String(user._id), user.role);
     const refreshToken = generateRefreshToken(String(user._id));
 

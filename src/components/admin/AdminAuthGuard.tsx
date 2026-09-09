@@ -8,15 +8,17 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
+  const isLoginPage = pathname === '/admin/login' || pathname === '/admin/login/';
+
   useEffect(() => {
     setMounted(true);
     const token = localStorage.getItem('adminToken');
     
-    // If no admin token and not trying to log in, bounce them to the homepage
-    if (!token && pathname !== '/admin/login') {
-      router.replace('/');
+    // If no admin token and not on the login page, redirect to the admin login page
+    if (!token && !isLoginPage) {
+      router.replace('/admin/login');
     }
-  }, [pathname, router]);
+  }, [pathname, isLoginPage, router]);
 
   // Prevent hydration mismatch
   if (!mounted) return <div className="min-h-screen bg-[var(--color-admin-bg)]" />;
@@ -24,7 +26,7 @@ export default function AdminAuthGuard({ children }: { children: React.ReactNode
   const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null;
   
   // Prevent flashing the admin UI before the redirect happens
-  if (!token && pathname !== '/admin/login') {
+  if (!token && !isLoginPage) {
     return <div className="min-h-screen bg-[var(--color-admin-bg)]" />;
   }
 

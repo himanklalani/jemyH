@@ -9,6 +9,7 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const router = useRouter();
 
   // Stock adjustment modal state
@@ -24,7 +25,8 @@ export default function AdminProductsPage() {
     if (!token) return router.push('/admin/login');
 
     try {
-      const res = await fetch(`/api/admin/products?search=${search}`, {
+      const catQuery = selectedCategory !== 'all' ? `&category=${selectedCategory}` : '';
+      const res = await fetch(`/api/admin/products?search=${encodeURIComponent(search)}${catQuery}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.status === 401 || res.status === 403) {
@@ -56,7 +58,7 @@ export default function AdminProductsPage() {
 
   useEffect(() => {
     fetchProducts();
-  }, [search]); // re-fetch on search change
+  }, [search, selectedCategory]);
 
   const handleStockAdjust = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -113,23 +115,32 @@ export default function AdminProductsPage() {
     <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
       
       {/* Header */}
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h1 className="text-3xl font-serif text-[var(--color-gold-primary)] tracking-tight mb-2">Master Catalog</h1>
-          <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide">Manage eyewear inventory, pricing, and technical attributes.</p>
+          <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide">Manage frames, accessories, cart add-ons, pricing, and inventory.</p>
         </div>
-        <Link 
-          href="/admin/products/editor/new"
-          className="flex items-center gap-2 bg-[var(--color-gold-primary)] text-[var(--color-indigo-950)] px-6 py-2.5 rounded-lg font-bold text-sm tracking-wide transition-transform hover:scale-105 active:scale-95"
-        >
-          <Plus size={16} />
-          <span>NEW PRODUCT</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link 
+            href="/admin/products/editor/new?category=accessories&isAddon=true"
+            className="flex items-center gap-2 bg-[var(--color-admin-surface)] text-[var(--color-gold-primary)] border border-[var(--color-gold-primary)]/40 hover:border-[var(--color-gold-primary)] px-4 py-2.5 rounded-lg font-bold text-xs tracking-wider uppercase transition-all hover:bg-[var(--color-gold-primary)]/10 active:scale-95"
+          >
+            <Plus size={15} />
+            <span>Add Accessory / Add-on</span>
+          </Link>
+          <Link 
+            href="/admin/products/editor/new"
+            className="flex items-center gap-2 bg-[var(--color-gold-primary)] text-[var(--color-indigo-950)] px-6 py-2.5 rounded-lg font-bold text-sm tracking-wide transition-transform hover:scale-105 active:scale-95 shadow-md"
+          >
+            <Plus size={16} />
+            <span>NEW PRODUCT</span>
+          </Link>
+        </div>
       </div>
 
       {/* Toolbar */}
-      <div className="bg-[var(--color-admin-surface)] p-4 rounded-xl border border-[var(--color-admin-border)] flex gap-4">
-        <div className="flex-1 flex items-center gap-3 bg-[var(--color-admin-bg)] px-4 py-2 rounded-lg border border-[var(--color-admin-border)] focus-within:border-[var(--color-gold-primary)] transition-colors">
+      <div className="bg-[var(--color-admin-surface)] p-4 rounded-xl border border-[var(--color-admin-border)] flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+        <div className="flex-1 max-w-md flex items-center gap-3 bg-[var(--color-admin-bg)] px-4 py-2.5 rounded-lg border border-[var(--color-admin-border)] focus-within:border-[var(--color-gold-primary)] transition-colors">
           <Search size={16} className="text-[var(--color-admin-text-muted)]" />
           <input 
             type="text" 
@@ -138,6 +149,30 @@ export default function AdminProductsPage() {
             onChange={(e) => setSearch(e.target.value)}
             className="bg-transparent border-none outline-none w-full text-sm text-[var(--color-admin-text)]"
           />
+        </div>
+
+        {/* Category Filter Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 no-scrollbar">
+          {[
+            { id: 'all', label: 'All Items' },
+            { id: 'eyeglasses', label: 'Optical' },
+            { id: 'sunglasses', label: 'Sunglasses' },
+            { id: 'accessories', label: 'Accessories' },
+            { id: 'addon', label: 'Add-ons' },
+            { id: 'perfume', label: 'Perfume' },
+          ].map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                selectedCategory === cat.id
+                  ? 'bg-[var(--color-gold-primary)] text-[var(--color-indigo-950)] shadow-sm font-bold'
+                  : 'bg-[var(--color-admin-bg)] text-[var(--color-admin-text-muted)] hover:text-[var(--color-admin-text)] border border-[var(--color-admin-border)]'
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -167,9 +202,17 @@ export default function AdminProductsPage() {
                     </div>
                     <div>
                       <p className="font-medium text-[var(--color-admin-text)] group-hover:text-[var(--color-gold-primary)] transition-colors">{product.name}</p>
-                      {product.type === 'EyewearProduct' && (
-                        <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-admin-accent)]/10 text-[var(--color-admin-accent)] mt-1 inline-block">Optical</span>
-                      )}
+                      <div className="flex items-center gap-1.5 mt-1">
+                        {product.type === 'EyewearProduct' && (
+                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-admin-accent)]/10 text-[var(--color-admin-accent)] inline-block">Optical</span>
+                        )}
+                        {product.isAddon && (
+                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-gold-primary)]/15 text-[var(--color-gold-primary)] font-bold inline-block">Cart Upsell</span>
+                        )}
+                        {product.category === 'accessories' && !product.isAddon && (
+                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold inline-block">Accessory</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </td>

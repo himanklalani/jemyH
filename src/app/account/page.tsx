@@ -45,6 +45,12 @@ export default function AccountPage() {
     ]).then(([userData, ordersData]) => {
       if (!userData.success) { router.push('/login'); return; }
       setUser(userData.user);
+      if (userData.user?.role === 'admin') {
+        localStorage.setItem('adminToken', token);
+      } else {
+        localStorage.removeItem('adminToken');
+      }
+      window.dispatchEvent(new Event('auth-change'));
       if (ordersData.success) setOrders(ordersData.orders);
     }).catch(() => router.push('/login'))
       .finally(() => setLoading(false));
@@ -52,6 +58,8 @@ export default function AccountPage() {
 
   const handleLogout = async () => {
     localStorage.removeItem('jemy_token');
+    localStorage.removeItem('adminToken');
+    window.dispatchEvent(new Event('auth-change'));
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/');
     router.refresh();
@@ -92,12 +100,22 @@ export default function AccountPage() {
             </h1>
             <p className="text-indigo-900/50 text-sm mt-2">{user?.email}</p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="hidden md:flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] font-semibold text-indigo-900/50 hover:text-red-500 transition-colors border border-indigo-900/10 hover:border-red-200 px-4 py-2 rounded-lg"
-          >
-            <LogOut size={14} /> Sign Out
-          </button>
+          <div className="flex items-center gap-3">
+            {user?.role === 'admin' && (
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] font-bold text-gold-primary hover:text-indigo-900 transition-colors border border-gold-primary/30 hover:border-gold-primary bg-gold-primary/10 hover:bg-gold-primary px-4 py-2 rounded-lg"
+              >
+                Admin Panel ↗
+              </Link>
+            )}
+            <button
+              onClick={handleLogout}
+              className="hidden md:flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] font-semibold text-indigo-900/50 hover:text-red-500 transition-colors border border-indigo-900/10 hover:border-red-200 px-4 py-2 rounded-lg"
+            >
+              <LogOut size={14} /> Sign Out
+            </button>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">

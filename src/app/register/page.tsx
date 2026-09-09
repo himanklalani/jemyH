@@ -32,6 +32,8 @@ export default function RegisterPage() {
       } else {
         if (data.accessToken) {
           localStorage.setItem('jemy_token', data.accessToken);
+          localStorage.removeItem('adminToken');
+          window.dispatchEvent(new Event('auth-change'));
         }
         router.push('/account');
         router.refresh();

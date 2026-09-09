@@ -20,19 +20,20 @@ interface Product {
 
 // Quick-filter chip definitions (design-taste-frontend skill: tactile pill chips over generic sidebar)
 const QUICK_FILTERS = [
-  { label: 'All',       param: null,       value: null },
-  { label: 'Sunglasses',param: 'category', value: 'sunglasses' },
-  { label: 'Optical',   param: 'category', value: 'eyeglasses' },
-  { label: 'Titanium',  param: 'material', value: 'titanium' },
-  { label: 'Acetate',   param: 'material', value: 'acetate' },
-  { label: 'Round',     param: 'shape',    value: 'round' },
-  { label: 'Geometric', param: 'shape',    value: 'geometric' },
-  { label: 'Aviator',   param: 'shape',    value: 'aviator' },
+  { label: 'All',        param: null,       value: null },
+  { label: 'Sunglasses', param: 'category', value: 'sunglasses' },
+  { label: 'Optical',    param: 'category', value: 'eyeglasses' },
+  { label: 'Accessories',param: 'category', value: 'accessories' },
+  { label: 'Titanium',   param: 'material', value: 'titanium' },
+  { label: 'Acetate',    param: 'material', value: 'acetate' },
+  { label: 'Round',      param: 'shape',    value: 'round' },
+  { label: 'Geometric',  param: 'shape',    value: 'geometric' },
+  { label: 'Aviator',    param: 'shape',    value: 'aviator' },
 ] as const;
 
 // Human-readable labels for active filter dismissal badges
 const FILTER_LABELS: Record<string, Record<string, string>> = {
-  category: { sunglasses: 'Sunglasses', eyeglasses: 'Optical' },
+  category: { sunglasses: 'Sunglasses', eyeglasses: 'Optical', accessories: 'Accessories', addon: 'Add-ons' },
   shape:    { round: 'Round', square: 'Square', aviator: 'Aviator', 'cat-eye': 'Cat-Eye', geometric: 'Geometric' },
   material: { acetate: 'Acetate', titanium: 'Titanium', mixed: 'Mixed Media' },
   size:     { s: 'Narrow (S)', m: 'Medium (M)', l: 'Wide (L)' },

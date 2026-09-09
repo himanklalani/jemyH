@@ -33,7 +33,55 @@ export default function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    setIsAdmin(!!localStorage.getItem('adminToken'));
+    let isMounted = true;
+
+    const checkAdminStatus = async () => {
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
+      if (!token) {
+        if (isMounted) setIsAdmin(false);
+        return;
+      }
+
+      // Optimistic check from local admin token
+      if (localStorage.getItem('adminToken') && isMounted) {
+        setIsAdmin(true);
+      }
+
+      try {
+        const res = await fetch('/api/user/profile', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.user?.role === 'admin') {
+            if (isMounted) setIsAdmin(true);
+            localStorage.setItem('adminToken', token);
+            return;
+          }
+        }
+      } catch {
+        // network issue - keep optimistic state if token exists
+      }
+
+      // If database verification confirms user is not admin
+      if (isMounted) setIsAdmin(false);
+      localStorage.removeItem('adminToken');
+    };
+
+    checkAdminStatus();
+
+    const handleAuthChange = () => {
+      checkAdminStatus();
+    };
+
+    window.addEventListener('auth-change', handleAuthChange);
+    window.addEventListener('storage', handleAuthChange);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener('auth-change', handleAuthChange);
+      window.removeEventListener('storage', handleAuthChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -221,6 +269,34 @@ export default function Navbar() {
                         </Link>
                       </motion.div>
                     ))}
+                    {isAdmin && (
+                      <motion.div
+                        key="admin"
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ delay: 0.08 + MENU_LINKS.length * 0.05, duration: 0.4, ease }}
+                      >
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsOpen(false)}
+                          className="group flex items-center justify-between py-4 border-b border-white/[0.06] last:border-0"
+                        >
+                          <div className="flex items-baseline gap-4">
+                            <span className="font-mono text-[10px] text-gold-primary/50 group-hover:text-gold-primary transition-colors duration-300 w-4">
+                              08
+                            </span>
+                            <span className="font-display text-[1.65rem] md:text-[1.85rem] text-gold-primary tracking-[-0.025em] leading-none group-hover:text-gold-light transition-colors duration-300">
+                              Admin Panel
+                            </span>
+                          </div>
+                          <ArrowUpRight
+                            size={16}
+                            className="text-gold-primary/40 group-hover:text-gold-primary transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                          />
+                        </Link>
+                      </motion.div>
+                    )}
                   </nav>
                 </div>
 

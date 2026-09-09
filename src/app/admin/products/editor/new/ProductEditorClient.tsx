@@ -11,6 +11,8 @@ export default function ProductEditorClient({ productId }: { productId: string }
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   
+  const [customCategories, setCustomCategories] = useState<{ name: string; slug: string }[]>([]);
+  
   const [formData, setFormData] = useState<any>({
     name: '',
     slug: '',
@@ -22,6 +24,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
     images: [''],
     requiresPrescription: true,
     isPublished: true,
+    isAddon: false,
     sku: '',
     brand: 'Jemy',
     tags: [],
@@ -42,6 +45,50 @@ export default function ProductEditorClient({ productId }: { productId: string }
     lensTint: 'Gray',
     isPhotochromic: false,
   });
+
+  const slugify = (text: string) =>
+    text
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+
+  useEffect(() => {
+    // Fetch custom categories for dynamic options
+    const fetchCustomCategories = async () => {
+      const token = localStorage.getItem('adminToken');
+      try {
+        const res = await fetch('/api/admin/categories', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success && Array.isArray(data.categories)) {
+          setCustomCategories(data.categories.map((c: any) => ({ name: c.name, slug: c.slug })));
+        }
+      } catch (err) {
+        console.error('Failed to load categories', err);
+      }
+    };
+    fetchCustomCategories();
+
+    // Check query params for preset category or addon flag
+    if (typeof window !== 'undefined' && isNew) {
+      const params = new URLSearchParams(window.location.search);
+      const catParam = params.get('category');
+      const addonParam = params.get('isAddon');
+      if (catParam || addonParam) {
+        setFormData((prev: any) => {
+          const nextCat = catParam || prev.category;
+          return {
+            ...prev,
+            category: nextCat,
+            isAddon: addonParam === 'true' || nextCat === 'addon' || prev.isAddon,
+            requiresPrescription: nextCat === 'eyeglasses',
+          };
+        });
+      }
+    }
+  }, [isNew]);
 
   useEffect(() => {
     if (!isNew) {
@@ -143,18 +190,39 @@ export default function ProductEditorClient({ productId }: { productId: string }
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Name <span className="text-red-500 ml-1">*</span></label>
-              <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
+              <input 
+                type="text" 
+                required 
+                value={formData.name} 
+                onChange={e => {
+                  const newName = e.target.value;
+                  if (isNew && (!formData.slug || formData.slug === slugify(formData.name))) {
+                    setFormData({ ...formData, name: newName, slug: slugify(newName) });
+                  } else {
+                    setFormData({ ...formData, name: newName });
+                  }
+                }} 
+                placeholder="e.g. Leather Protective Case"
+                className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" 
+              />
             </div>
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Slug / URL <span className="text-red-500 ml-1">*</span></label>
-              <input type="text" required value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
+              <input 
+                type="text" 
+                required 
+                value={formData.slug} 
+                onChange={e => setFormData({...formData, slug: slugify(e.target.value)})} 
+                placeholder="e.g. leather-protective-case"
+                className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" 
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">SKU / Internal Code</label>
-              <input type="text" value={formData.sku || ''} onChange={e => setFormData({...formData, sku: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
+              <input type="text" value={formData.sku || ''} onChange={e => setFormData({...formData, sku: e.target.value})} placeholder="e.g. ACC-CASE-01" className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
             </div>
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Brand</label>
@@ -164,11 +232,40 @@ export default function ProductEditorClient({ productId }: { productId: string }
 
           <div className="grid grid-cols-3 gap-6">
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Category</label>
-              <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]">
-                <option value="eyeglasses">Eyeglasses</option>
-                <option value="sunglasses">Sunglasses</option>
-                <option value="perfume">Perfume</option>
+              <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Category <span className="text-red-500 ml-1">*</span></label>
+              <select 
+                value={formData.category} 
+                onChange={e => {
+                  const nextCat = e.target.value;
+                  const isNowAddon = nextCat === 'addon' ? true : formData.isAddon;
+                  const reqRx = nextCat === 'eyeglasses';
+                  setFormData({
+                    ...formData, 
+                    category: nextCat,
+                    isAddon: isNowAddon,
+                    requiresPrescription: reqRx,
+                  });
+                }} 
+                className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]"
+              >
+                <optgroup label="Core Eyewear">
+                  <option value="eyeglasses">Eyeglasses (Optical)</option>
+                  <option value="sunglasses">Sunglasses</option>
+                </optgroup>
+                <optgroup label="Accessories & Essentials">
+                  <option value="accessories">Accessories (Cases, Chains, Cloths)</option>
+                  <option value="addon">Add-on / Upsell</option>
+                  <option value="perfume">Perfume & Fragrance</option>
+                </optgroup>
+                {customCategories.length > 0 && (
+                  <optgroup label="Custom Categories">
+                    {customCategories
+                      .filter(c => !['eyeglasses', 'sunglasses', 'accessories', 'addon', 'perfume'].includes(c.slug))
+                      .map(c => (
+                        <option key={c.slug} value={c.slug}>{c.name}</option>
+                      ))}
+                  </optgroup>
+                )}
               </select>
             </div>
             <div className="space-y-2">
@@ -187,16 +284,29 @@ export default function ProductEditorClient({ productId }: { productId: string }
 
           <div className="space-y-2">
             <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Description <span className="text-red-500 ml-1">*</span></label>
-            <textarea required rows={4} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
+            <textarea required rows={4} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Describe product material, craftsmanship, and specifications..." className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
           </div>
           
-          <label className="flex items-center gap-3 p-4 bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg cursor-pointer mt-4">
-            <input type="checkbox" checked={formData.isPublished !== false} onChange={e => setFormData({...formData, isPublished: e.target.checked})} className="w-5 h-5 accent-[var(--color-gold-primary)]" />
-            <div>
-              <span className="block text-sm font-medium text-[var(--color-admin-text)]">Published on Storefront</span>
-              <span className="block text-xs text-[var(--color-admin-text-muted)]">If unchecked, this product will be hidden from public catalogs.</span>
-            </div>
-          </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <label className="flex items-center gap-3 p-4 bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg cursor-pointer">
+              <input type="checkbox" checked={formData.isPublished !== false} onChange={e => setFormData({...formData, isPublished: e.target.checked})} className="w-5 h-5 accent-[var(--color-gold-primary)]" />
+              <div>
+                <span className="block text-sm font-medium text-[var(--color-admin-text)]">Published on Storefront</span>
+                <span className="block text-xs text-[var(--color-admin-text-muted)]">If unchecked, this product will be hidden from public catalogs.</span>
+              </div>
+            </label>
+
+            <label className="flex items-center gap-3 p-4 bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg cursor-pointer">
+              <input type="checkbox" checked={!!formData.isAddon} onChange={e => setFormData({...formData, isAddon: e.target.checked})} className="w-5 h-5 accent-[var(--color-gold-primary)]" />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="block text-sm font-medium text-[var(--color-admin-text)]">Feature as Cart Add-on (Upsell)</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-gold-primary)]/15 text-[var(--color-gold-primary)]">Cart Upsell</span>
+                </div>
+                <span className="block text-xs text-[var(--color-admin-text-muted)]">Shows in the 1-click "Complete Your Care" carousel inside the Cart Drawer.</span>
+              </div>
+            </label>
+          </div>
         </div>
 
         {/* Metadata & Discovery */}
@@ -299,6 +409,38 @@ export default function ProductEditorClient({ productId }: { productId: string }
               <input type="checkbox" checked={formData.requiresPrescription} onChange={e => setFormData({...formData, requiresPrescription: e.target.checked})} className="w-5 h-5 accent-[var(--color-gold-primary)]" />
               <span className="text-sm font-medium text-[var(--color-admin-text)]">Requires Customer Prescription (Rx) Verification?</span>
             </label>
+          </div>
+        )}
+
+        {/* Accessory Specific (Cases, Chains, Cloths, Kits, Add-ons) */}
+        {(formData.category === 'accessories' || formData.category === 'addon') && (
+          <div className="bg-[var(--color-admin-surface)] p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
+            <h2 className="text-sm font-bold text-[var(--color-admin-text-muted)] uppercase tracking-wider border-b border-[var(--color-admin-border)] pb-4 flex items-center gap-2">
+              <Info size={16} className="text-[var(--color-gold-primary)]" /> Accessory Details & Specifications
+            </h2>
+            
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Accessory Type</label>
+                <input 
+                  type="text" 
+                  value={formData.frameMaterial || ''} 
+                  onChange={e => setFormData({...formData, frameMaterial: e.target.value})} 
+                  placeholder="e.g. Leather Hard Case, Microfiber Cloth, Gold Eyewear Chain"
+                  className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Compatibility / Size</label>
+                <input 
+                  type="text" 
+                  value={formData.frameShape || ''} 
+                  onChange={e => setFormData({...formData, frameShape: e.target.value})} 
+                  placeholder="e.g. Fits all frames, Universal size, For oversized silhouettes"
+                  className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" 
+                />
+              </div>
+            </div>
           </div>
         )}
 

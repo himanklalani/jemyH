@@ -10,7 +10,7 @@ export interface IProduct extends Document {
   name: string;
   slug: string;
   description: string;
-  category: 'sunglasses' | 'eyeglasses' | 'perfume' | 'addon';
+  category: 'sunglasses' | 'eyeglasses' | 'perfume' | 'addon' | 'accessories' | string;
   images: string[];
   pricing: {
     US?: { amount: number; currency: string; compareAtAmount?: number };
@@ -34,7 +34,7 @@ const ProductSchema: Schema = new Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
   description: { type: String, required: true },
-  category: { type: String, enum: ['sunglasses', 'eyeglasses', 'perfume', 'addon'], required: true },
+  category: { type: String, required: true },
   images: [{ type: String }],
   pricing: {
     US: PricingSchema,
@@ -55,6 +55,7 @@ const ProductSchema: Schema = new Schema({
 }, { timestamps: true, discriminatorKey: 'category' });
 
 ProductSchema.index({ category: 1, aesthetics: 1 });
+ProductSchema.index({ isAddon: 1 });
 ProductSchema.index({ name: 'text', description: 'text' });
 
 export const Product = mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);

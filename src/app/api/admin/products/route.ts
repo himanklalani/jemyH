@@ -28,8 +28,18 @@ export async function GET(req: NextRequest) {
       ];
     }
 
+    const isAddonParam = searchParams.get('isAddon');
+
     if (category) {
-      query.category = category;
+      if (category === 'addon') {
+        query.$or = [{ category: 'addon' }, { isAddon: true }];
+      } else {
+        query.category = category;
+      }
+    }
+
+    if (isAddonParam === 'true') {
+      query.isAddon = true;
     }
 
     if (stockStatus === 'in_stock') {

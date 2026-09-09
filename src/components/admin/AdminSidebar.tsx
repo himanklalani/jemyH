@@ -28,6 +28,8 @@ export default function AdminSidebar() {
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('jemy_token');
+    window.dispatchEvent(new Event('auth-change'));
     router.push('/admin/login');
   };
 

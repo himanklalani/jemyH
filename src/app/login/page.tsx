@@ -32,6 +32,12 @@ export default function LoginPage() {
       } else {
         if (data.accessToken) {
           localStorage.setItem('jemy_token', data.accessToken);
+          if (data.user?.role === 'admin') {
+            localStorage.setItem('adminToken', data.accessToken);
+          } else {
+            localStorage.removeItem('adminToken');
+          }
+          window.dispatchEvent(new Event('auth-change'));
         }
         router.push('/account');
         router.refresh();
