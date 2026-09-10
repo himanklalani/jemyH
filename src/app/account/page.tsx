@@ -102,12 +102,12 @@ export default function AccountPage() {
           </div>
           <div className="flex items-center gap-3">
             {user?.role === 'admin' && (
-              <Link
+              <a
                 href="/admin"
                 className="flex items-center gap-2 text-[11px] uppercase tracking-[0.1em] font-bold text-gold-primary hover:text-indigo-900 transition-colors border border-gold-primary/30 hover:border-gold-primary bg-gold-primary/10 hover:bg-gold-primary px-4 py-2 rounded-lg"
               >
                 Admin Panel ↗
-              </Link>
+              </a>
             )}
             <button
               onClick={handleLogout}

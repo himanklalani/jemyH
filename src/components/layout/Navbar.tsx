@@ -143,12 +143,12 @@ export default function Navbar() {
         <div className="w-px h-5 bg-black/10 mx-0.5" />
 
         {isAdmin && (
-          <Link
+          <a
             href="/admin"
             className="group flex items-center justify-center px-4 h-10 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors mr-1"
           >
             Admin
-          </Link>
+          </a>
         )}
 
         {/* Desktop quick-category links - 1-click access to top collections */}
@@ -272,7 +272,7 @@ export default function Navbar() {
                         exit={{ opacity: 0 }}
                         transition={{ delay: 0.08 + MENU_LINKS.length * 0.05, duration: 0.4, ease }}
                       >
-                        <Link
+                        <a
                           href="/admin"
                           onClick={() => setIsOpen(false)}
                           className="group flex items-center justify-between py-4 border-b border-white/[0.06] last:border-0"
@@ -289,7 +289,7 @@ export default function Navbar() {
                             size={16}
                             className="text-gold-primary/40 group-hover:text-gold-primary transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                           />
-                        </Link>
+                        </a>
                       </motion.div>
                     )}
                   </nav>
