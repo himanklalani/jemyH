@@ -44,6 +44,29 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
 
+    res.cookies.set('jemy_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    });
+
+    if (user.role === 'admin') {
+      res.cookies.set('admin_session', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/',
+      });
+    } else {
+      res.cookies.set('admin_session', '', {
+        maxAge: 0,
+        path: '/',
+      });
+    }
+
     res.cookies.set('jemy_refresh', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

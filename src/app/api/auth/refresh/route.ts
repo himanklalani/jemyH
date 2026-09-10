@@ -24,7 +24,27 @@ export async function POST(req: NextRequest) {
 
     const newAccessToken = generateAccessToken(String(user._id), user.role);
 
-    return NextResponse.json({ success: true, accessToken: newAccessToken }, { status: 200 });
+    const res = NextResponse.json({ success: true, accessToken: newAccessToken }, { status: 200 });
+
+    res.cookies.set('jemy_token', newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
+    });
+
+    if (user.role === 'admin') {
+      res.cookies.set('admin_session', newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 7,
+        path: '/',
+      });
+    }
+
+    return res;
   } catch (error) {
     console.error('[refresh]', error);
     return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongoose';
 import Order from '@/models/Order';
 import { checkAdminAuth } from '@/lib/auth';
+import { escapeRegex } from '@/lib/sanitize';
 
 export async function GET(req: NextRequest) {
   try {
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
       if (search.match(/^[0-9a-fA-F]{24}$/)) {
         query._id = search;
       } else {
-        query['shippingAddress.firstName'] = { $regex: search, $options: 'i' };
+        query['shippingAddress.firstName'] = { $regex: escapeRegex(search.trim()), $options: 'i' };
       }
     }
 

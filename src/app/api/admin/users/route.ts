@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongoose';
 import User from '@/models/User';
 import { checkAdminAuth } from '@/lib/auth';
+import { escapeRegex } from '@/lib/sanitize';
 
 export async function GET(req: NextRequest) {
   try {
@@ -17,9 +18,10 @@ export async function GET(req: NextRequest) {
 
     const query: any = {};
     if (search) {
+      const safeSearch = escapeRegex(search.trim());
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { email: { $regex: safeSearch, $options: 'i' } },
       ];
     }
 

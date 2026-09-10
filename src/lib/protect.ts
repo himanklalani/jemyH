@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAccessToken } from './auth';
+import { verifyAccessToken, extractToken } from './auth';
 import dbConnect from './mongoose';
 import User from '@/models/User';
 
@@ -8,17 +8,16 @@ export type AuthenticatedRequest = NextRequest & {
 };
 
 /**
- * Verifies the Bearer token and attaches the user to the request context.
+ * Verifies the token (from httpOnly cookie or Bearer header) and attaches the user to the request context.
  * Returns a NextResponse error if invalid, or null if successful.
  */
 export async function protect(req: NextRequest): Promise<{ user: any } | NextResponse> {
   try {
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const token = extractToken(req);
+    if (!token) {
       return NextResponse.json({ success: false, message: 'Not authorized, no token' }, { status: 401 });
     }
 
-    const token = authHeader.split(' ')[1];
     const decoded = verifyAccessToken(token);
 
     if (!decoded) {

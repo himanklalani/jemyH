@@ -28,10 +28,23 @@ export async function POST(req: NextRequest) {
     }
 
     if (tempUser.otp !== otp) {
-      return NextResponse.json({ success: false, message: 'Invalid OTP' }, { status: 400 });
+      tempUser.attempts = (tempUser.attempts || 0) + 1;
+      if (tempUser.attempts >= 5) {
+        await TempUser.deleteOne({ email });
+        return NextResponse.json(
+          { success: false, message: 'Too many failed attempts. Please register again.' },
+          { status: 429 }
+        );
+      }
+      await tempUser.save();
+      const remaining = 5 - tempUser.attempts;
+      return NextResponse.json(
+        { success: false, message: `Invalid OTP. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.` },
+        { status: 400 }
+      );
     }
 
-    // Promote TempUser → User
+    // Promote TempUser to User
     const newUser = await User.create({
       email: tempUser.email,
       password: tempUser.password,
@@ -74,6 +87,14 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
+
+    res.cookies.set('jemy_token', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: '/',
+    });
 
     res.cookies.set('jemy_refresh', refreshToken, {
       httpOnly: true,

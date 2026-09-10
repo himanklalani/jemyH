@@ -34,14 +34,26 @@ export function verifyRefreshToken(token: string) {
   }
 }
 
+// Helper to extract JWT from httpOnly cookie or Authorization Bearer header
+export function extractToken(req: NextRequest): string | null {
+  const cookieToken = req.cookies.get('jemy_token')?.value;
+  if (cookieToken) return cookieToken;
+
+  const authHeader = req.headers.get('authorization');
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.split(' ')[1];
+  }
+
+  return null;
+}
+
 // Admin Protection Helper for Next.js API Routes
 export async function checkAdminAuth(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
+  const token = extractToken(req);
+  if (!token) {
     return { error: NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 }) };
   }
 
-  const token = authHeader.split(' ')[1];
   const decoded = verifyAccessToken(token);
 
   if (!decoded) {
@@ -64,12 +76,11 @@ export async function checkAdminAuth(req: NextRequest) {
 
 // Generic User Protection Helper for Next.js API Routes
 export async function checkAuth(req: NextRequest) {
-  const authHeader = req.headers.get('authorization');
-  if (!authHeader?.startsWith('Bearer ')) {
+  const token = extractToken(req);
+  if (!token) {
     return { error: NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 }) };
   }
 
-  const token = authHeader.split(' ')[1];
   const decoded = verifyAccessToken(token);
 
   if (!decoded) {
@@ -82,9 +93,8 @@ export async function checkAuth(req: NextRequest) {
 // Helper to identify the user (logged in or guest session)
 export async function getCartIdentifier(req: NextRequest) {
   let userId = null;
-  const authHeader = req.headers.get('authorization');
-  if (authHeader?.startsWith('Bearer ')) {
-    const token = authHeader.split(' ')[1];
+  const token = extractToken(req);
+  if (token) {
     const decoded = verifyAccessToken(token);
     if (decoded) userId = decoded.id;
   }

@@ -31,6 +31,7 @@ export interface IUser extends Document {
   savedPrescriptions: any[];
   resetPasswordOtp?: string;
   resetPasswordExpires?: Date;
+  resetPasswordAttempts?: number;
   isSuspended?: boolean;
   membership?: {
     isActive: boolean;
@@ -54,6 +55,7 @@ const UserSchema: Schema = new Schema({
   savedPrescriptions: [PrescriptionSchema],
   resetPasswordOtp: { type: String },
   resetPasswordExpires: { type: Date },
+  resetPasswordAttempts: { type: Number, default: 0 },
   isSuspended: { type: Boolean, default: false },
   membership: {
     isActive: { type: Boolean, default: false },

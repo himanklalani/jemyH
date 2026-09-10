@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongoose';
 import { Product } from '@/models/Product';
 import { applyRateLimit } from '@/lib/rateLimit';
+import { escapeRegex } from '@/lib/sanitize';
 
 export async function GET(req: NextRequest) {
   const limited = await applyRateLimit(req, 'auth');
@@ -32,20 +33,20 @@ export async function GET(req: NextRequest) {
     const shape = searchParams.get('shape');
     if (shape) {
       // Shape can be comma separated
-      const shapes = shape.split(',').map(s => s.trim());
-      query.frameShape = { $in: shapes.map(s => new RegExp(`^${s}$`, 'i')) };
+      const shapes = shape.split(',').map(s => s.trim()).filter(Boolean);
+      query.frameShape = { $in: shapes.map(s => new RegExp(`^${escapeRegex(s)}$`, 'i')) };
     }
 
     const material = searchParams.get('material');
     if (material) {
-      const materials = material.split(',').map(s => s.trim());
-      query.frameMaterial = { $in: materials.map(s => new RegExp(`^${s}$`, 'i')) };
+      const materials = material.split(',').map(s => s.trim()).filter(Boolean);
+      query.frameMaterial = { $in: materials.map(s => new RegExp(`^${escapeRegex(s)}$`, 'i')) };
     }
 
     const size = searchParams.get('size');
     if (size) {
-      const sizes = size.split(',').map(s => s.trim());
-      query.frameSize = { $in: sizes.map(s => new RegExp(`^${s}$`, 'i')) };
+      const sizes = size.split(',').map(s => s.trim()).filter(Boolean);
+      query.frameSize = { $in: sizes.map(s => new RegExp(`^${escapeRegex(s)}$`, 'i')) };
     }
 
     // Price range specific to the current region

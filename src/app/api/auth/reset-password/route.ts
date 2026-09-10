@@ -24,17 +24,37 @@ export async function POST(req: NextRequest) {
 
     const user = await User.findOne({
       email,
-      resetPasswordOtp: otp,
       resetPasswordExpires: { $gt: new Date() },
     });
 
-    if (!user) {
+    if (!user || !user.resetPasswordOtp) {
       return NextResponse.json({ success: false, message: 'Invalid or expired OTP' }, { status: 400 });
+    }
+
+    if (user.resetPasswordOtp !== otp) {
+      user.resetPasswordAttempts = (user.resetPasswordAttempts || 0) + 1;
+      if (user.resetPasswordAttempts >= 5) {
+        user.resetPasswordOtp = undefined;
+        user.resetPasswordExpires = undefined;
+        user.resetPasswordAttempts = 0;
+        await user.save();
+        return NextResponse.json(
+          { success: false, message: 'Too many failed attempts. Please request a new password reset.' },
+          { status: 429 }
+        );
+      }
+      await user.save();
+      const remaining = 5 - user.resetPasswordAttempts;
+      return NextResponse.json(
+        { success: false, message: `Invalid OTP. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.` },
+        { status: 400 }
+      );
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
     user.resetPasswordOtp = undefined;
     user.resetPasswordExpires = undefined;
+    user.resetPasswordAttempts = 0;
     await user.save();
 
     return NextResponse.json({ success: true, message: 'Password reset successfully' }, { status: 200 });

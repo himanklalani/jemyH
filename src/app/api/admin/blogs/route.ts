@@ -3,6 +3,7 @@ import dbConnect from '@/lib/mongoose';
 import Blog from '@/models/Blog';
 import AdminActivityLog from '@/models/AdminActivityLog';
 import { checkAdminAuth } from '@/lib/auth';
+import { escapeRegex } from '@/lib/sanitize';
 
 export async function GET(req: NextRequest) {
   try {
@@ -20,9 +21,10 @@ export async function GET(req: NextRequest) {
     const query: any = {};
     if (status) query.status = status;
     if (search) {
+      const safeSearch = escapeRegex(search.trim());
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { content: { $regex: search, $options: 'i' } }
+        { title: { $regex: safeSearch, $options: 'i' } },
+        { content: { $regex: safeSearch, $options: 'i' } }
       ];
     }
 

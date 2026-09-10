@@ -3,6 +3,7 @@ import dbConnect from '@/lib/mongoose';
 import { EyewearProduct, SunglassesProduct, Product } from '@/models/Product';
 import AdminActivityLog from '@/models/AdminActivityLog';
 import { checkAdminAuth } from '@/lib/auth';
+import { escapeRegex } from '@/lib/sanitize';
 
 export async function GET(req: NextRequest) {
   try {
@@ -21,10 +22,11 @@ export async function GET(req: NextRequest) {
     const query: any = {};
 
     if (search) {
+      const safeSearch = escapeRegex(search.trim());
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { slug: { $regex: search, $options: 'i' } },
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { description: { $regex: safeSearch, $options: 'i' } },
+        { slug: { $regex: safeSearch, $options: 'i' } },
       ];
     }
 

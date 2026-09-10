@@ -26,10 +26,15 @@ export default function AdminSidebar() {
 
   if (pathname === '/admin/login') return null;
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('jemy_token');
     window.dispatchEvent(new Event('auth-change'));
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch {
+      // ignore network errors on logout
+    }
     router.push('/admin/login');
   };
 
