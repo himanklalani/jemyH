@@ -168,13 +168,13 @@ export default function Navbar() {
         {isAdmin && (
           <>
             <div className="w-px h-5 bg-black/10 mx-0.5" />
-            <a
+            <Link
               href="/admin"
               className="group flex items-center justify-center px-3.5 h-8 sm:h-9 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors"
               title="Admin Panel"
             >
               Admin
-            </a>
+            </Link>
           </>
         )}
 

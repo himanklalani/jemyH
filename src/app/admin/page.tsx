@@ -56,8 +56,43 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full min-h-[500px]">
-        <div className="w-8 h-8 rounded-full border-2 border-[var(--color-admin-border)] border-t-[var(--color-gold-primary)] animate-spin"></div>
+      <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-300">
+        <div>
+          <h1 className="text-3xl font-serif text-[var(--color-gold-primary)] tracking-tight mb-2">Executive Overview</h1>
+          <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide">Real-time metrics and system analytics.</p>
+        </div>
+
+        {/* Skeleton KPI Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-[var(--color-admin-surface)] border border-[var(--color-admin-border)] rounded-2xl p-6 h-40 animate-pulse flex flex-col justify-between">
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-xl bg-white/5"></div>
+                <div className="w-12 h-5 rounded bg-white/5"></div>
+              </div>
+              <div className="space-y-2">
+                <div className="w-20 h-3 rounded bg-white/5"></div>
+                <div className="w-32 h-7 rounded bg-white/10"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Skeleton Trend & Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-[var(--color-admin-surface)] border border-[var(--color-admin-border)] rounded-2xl p-6 h-96 animate-pulse">
+            <div className="w-36 h-4 bg-white/5 rounded mb-8"></div>
+            <div className="h-60 bg-white/5 rounded-xl"></div>
+          </div>
+          <div className="bg-[var(--color-admin-surface)] border border-[var(--color-admin-border)] rounded-2xl p-6 h-96 animate-pulse">
+            <div className="w-32 h-4 bg-white/5 rounded mb-8"></div>
+            <div className="space-y-4">
+              {[1, 2, 3, 4].map(j => (
+                <div key={j} className="h-10 bg-white/5 rounded-xl"></div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
