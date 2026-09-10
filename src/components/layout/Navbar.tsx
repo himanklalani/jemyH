@@ -264,34 +264,6 @@ export default function Navbar() {
                         </Link>
                       </motion.div>
                     ))}
-                    {isAdmin && (
-                      <motion.div
-                        key="admin"
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ delay: 0.08 + MENU_LINKS.length * 0.05, duration: 0.4, ease }}
-                      >
-                        <a
-                          href="/admin"
-                          onClick={() => setIsOpen(false)}
-                          className="group flex items-center justify-between py-4 border-b border-white/[0.06] last:border-0"
-                        >
-                          <div className="flex items-baseline gap-4">
-                            <span className="font-mono text-[10px] text-gold-primary/50 group-hover:text-gold-primary transition-colors duration-300 w-4">
-                              08
-                            </span>
-                            <span className="font-display text-[1.65rem] md:text-[1.85rem] text-gold-primary tracking-[-0.025em] leading-none group-hover:text-gold-light transition-colors duration-300">
-                              Admin Panel
-                            </span>
-                          </div>
-                          <ArrowUpRight
-                            size={16}
-                            className="text-gold-primary/40 group-hover:text-gold-primary transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                          />
-                        </a>
-                      </motion.div>
-                    )}
                   </nav>
                 </div>
 
