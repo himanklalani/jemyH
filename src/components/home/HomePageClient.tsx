@@ -669,28 +669,30 @@ export default function HomePageClient({
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // CSS variables transition for theme
-    // Original manifesto dark zone
-    ScrollTrigger.create({
-      trigger: '#manifesto-section',
-      start: 'top 40%',
-      end: 'bottom 40%',
-      onEnter: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#1C2740', '--theme-text': '#EAEBE6', duration: 0.8, ease: 'power2.out' }),
-      onLeaveBack: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#EAEBE6', '--theme-text': '#1C2740', duration: 0.8, ease: 'power2.out' }),
-      onEnterBack: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#1C2740', '--theme-text': '#EAEBE6', duration: 0.8, ease: 'power2.out' }),
-      onLeave: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#EAEBE6', '--theme-text': '#1C2740', duration: 0.8, ease: 'power2.out' }),
-    });
-
-    // New early dark zone
-    ScrollTrigger.create({
-      trigger: '#early-dark-zone',
-      start: 'top 50%',
-      end: 'bottom 50%',
-      onEnter: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#1C2740', '--theme-text': '#EAEBE6', duration: 0.8, ease: 'power2.out' }),
-      onLeaveBack: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#EAEBE6', '--theme-text': '#1C2740', duration: 0.8, ease: 'power2.out' }),
-      onEnterBack: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#1C2740', '--theme-text': '#EAEBE6', duration: 0.8, ease: 'power2.out' }),
-      onLeave: () => gsap.to(themeWrapperRef.current, { '--theme-bg': '#EAEBE6', '--theme-text': '#1C2740', duration: 0.8, ease: 'power2.out' }),
-    });
+    // Buttery-smooth scrubbed theme transition tied directly to scroll momentum
+    gsap.fromTo(
+      themeWrapperRef.current,
+      {
+        '--theme-bg': '#EAEBE6',
+        '--theme-text': '#1C2740',
+        backgroundColor: '#EAEBE6',
+        color: '#1C2740',
+      },
+      {
+        '--theme-bg': '#1C2740',
+        '--theme-text': '#EAEBE6',
+        backgroundColor: '#1C2740',
+        color: '#EAEBE6',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '#early-dark-zone',
+          start: 'top 85%',
+          end: 'top 15%',
+          scrub: 1.5, // 1.5s fluid momentum damping for ultra-luxurious feel
+          invalidateOnRefresh: true,
+        },
+      }
+    );
   }, { scope: themeWrapperRef });
 
   const editorialSlides = useMemo(() => {
@@ -709,7 +711,7 @@ export default function HomePageClient({
   return (
     <div 
       ref={themeWrapperRef} 
-      className="theme-wrapper overflow-clip w-full max-w-[100vw]" 
+      className="theme-wrapper overflow-clip w-full max-w-[100vw] transition-colors duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" 
       style={{ 
         '--theme-bg': '#EAEBE6', 
         '--theme-text': '#1C2740', 
