@@ -24,8 +24,6 @@ export default function AdminSidebar() {
   const router = useRouter();
   const { isSidebarOpen, closeSidebar } = useAdminStore();
 
-  if (pathname === '/admin/login') return null;
-
   const handleLogout = async () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('jemy_token');
@@ -35,7 +33,7 @@ export default function AdminSidebar() {
     } catch {
       // ignore network errors on logout
     }
-    router.push('/admin/login');
+    router.push('/login');
   };
 
   return (

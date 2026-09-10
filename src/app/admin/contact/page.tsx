@@ -12,8 +12,11 @@ export default function AdminContactInboxPage() {
   const router = useRouter();
 
   const fetchContacts = async () => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) return router.push('/admin/login');
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
+    if (!token) return router.push('/login');
+    if (!localStorage.getItem('adminToken')) {
+      localStorage.setItem('adminToken', token);
+    }
 
     try {
       const url = `/api/admin/contact${selectedStatus ? `?status=${selectedStatus}` : ''}`;

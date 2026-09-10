@@ -16,8 +16,11 @@ export default function AdminOrdersPage() {
   const [actionLoading, setActionLoading] = useState(false);
 
   const fetchOrders = async () => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) return router.push('/admin/login');
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
+    if (!token) return router.push('/login');
+    if (!localStorage.getItem('adminToken')) {
+      localStorage.setItem('adminToken', token);
+    }
 
     try {
       const res = await fetch(`/api/admin/orders?search=${search}`, {

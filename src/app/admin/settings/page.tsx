@@ -8,7 +8,7 @@ export default function AdminSettingsPage() {
 
   const handleExport = async (type: 'products' | 'newsletters') => {
     setExportLoading(type);
-    const token = localStorage.getItem('adminToken');
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
 
     try {
       const res = await fetch(`/api/admin/exports?type=${type}`, {

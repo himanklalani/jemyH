@@ -66,9 +66,11 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // Add 301 redirects here if URLs are restructured in future
-      // Example:
-      // { source: '/old-path', destination: '/new-path', permanent: true },
+      {
+        source: '/admin/login',
+        destination: '/login',
+        permanent: false,
+      },
     ];
   },
 };

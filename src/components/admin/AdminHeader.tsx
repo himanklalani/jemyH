@@ -1,14 +1,10 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
 import { Bell, Search, Globe, Menu } from 'lucide-react';
 import { useAdminStore } from '@/store/useAdminStore';
 
 export default function AdminHeader() {
-  const pathname = usePathname();
   const { toggleSidebar } = useAdminStore();
-  
-  if (pathname === '/admin/login') return null;
 
   return (
     <header className="sticky top-0 z-30 bg-[var(--color-admin-bg)]/80 backdrop-blur-xl border-b border-[var(--color-admin-border)] h-20 flex items-center justify-between px-4 md:px-8 lg:ml-64">

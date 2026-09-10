@@ -21,8 +21,11 @@ export default function AdminProductsPage() {
   });
 
   const fetchProducts = async () => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) return router.push('/admin/login');
+    const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
+    if (!token) return router.push('/login');
+    if (!localStorage.getItem('adminToken')) {
+      localStorage.setItem('adminToken', token);
+    }
 
     try {
       const catQuery = selectedCategory !== 'all' ? `&category=${selectedCategory}` : '';
@@ -31,7 +34,7 @@ export default function AdminProductsPage() {
       });
       if (res.status === 401 || res.status === 403) {
         localStorage.removeItem('adminToken');
-        router.push('/admin/login');
+        router.push('/login');
         return;
       }
       

@@ -12,10 +12,13 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const fetchDashboardData = async () => {
-      const token = localStorage.getItem('adminToken');
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
       if (!token) {
-        router.push('/admin/login');
+        router.push('/login');
         return;
+      }
+      if (!localStorage.getItem('adminToken')) {
+        localStorage.setItem('adminToken', token);
       }
 
       try {
@@ -26,7 +29,7 @@ export default function AdminDashboard() {
 
         if (kpiRes.status === 401 || kpiRes.status === 403 || cartRes.status === 401 || cartRes.status === 403) {
           localStorage.removeItem('adminToken');
-          router.push('/admin/login');
+          router.push('/login');
           return;
         }
 

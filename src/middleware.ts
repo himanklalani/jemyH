@@ -47,33 +47,26 @@ async function verifyJwtEdge(token: string, secret: string): Promise<{ id: strin
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isLoginPage = pathname === '/admin/login' || pathname === '/admin/login/';
-  const jwtSecret = process.env.JWT_SECRET || '';
 
-  const token = req.cookies.get('admin_session')?.value || req.cookies.get('jemy_token')?.value;
-
-  let isAdmin = false;
-  if (token && jwtSecret) {
-    const payload = await verifyJwtEdge(token, jwtSecret);
-    if (payload && payload.role === 'admin') {
-      isAdmin = true;
-    }
+  // 1. Never allow access to /admin/login - redirect directly to /login
+  if (pathname === '/admin/login' || pathname.startsWith('/admin/login/')) {
+    return NextResponse.redirect(new URL('/login', req.url));
   }
 
-  // If already authenticated as admin and visiting /admin/login, redirect to /admin dashboard
-  if (isLoginPage) {
-    if (isAdmin) {
-      return NextResponse.redirect(new URL('/admin', req.url));
+  // 2. Protect all other /admin routes
+  const jwtSecret = process.env.JWT_SECRET || '';
+  const token = req.cookies.get('admin_session')?.value || req.cookies.get('jemy_token')?.value;
+
+  if (token && jwtSecret) {
+    const payload = await verifyJwtEdge(token, jwtSecret);
+    if (!payload || payload.role !== 'admin') {
+      return NextResponse.redirect(new URL('/login', req.url));
     }
     return NextResponse.next();
   }
 
-  // For all other /admin routes, block unauthorized access immediately at the edge
-  if (!isAdmin) {
-    const loginUrl = new URL('/admin/login', req.url);
-    return NextResponse.redirect(loginUrl);
-  }
-
+  // If no cookie is present, allow AdminAuthGuard on client to check localStorage session
+  // AdminAuthGuard will immediately redirect to /login if the user is not a verified admin in database
   return NextResponse.next();
 }
 

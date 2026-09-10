@@ -56,7 +56,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
   useEffect(() => {
     // Fetch custom categories for dynamic options
     const fetchCustomCategories = async () => {
-      const token = localStorage.getItem('adminToken');
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
       try {
         const res = await fetch('/api/admin/categories', {
           headers: { Authorization: `Bearer ${token}` }

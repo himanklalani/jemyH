@@ -14,7 +14,7 @@ export default function AdminMarketingPage() {
 
   useEffect(() => {
     const fetchMetrics = async () => {
-      const token = localStorage.getItem('adminToken');
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
       const [cRes, oRes, adRes, mRes] = await Promise.all([
         fetch('/api/admin/marketing/campaigns',      { headers: { Authorization: `Bearer ${token}` } }),
         fetch('/api/admin/marketing/offers',         { headers: { Authorization: `Bearer ${token}` } }),
