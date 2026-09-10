@@ -4,18 +4,19 @@ import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { X, Search, ShoppingBag, ArrowRight, ArrowUpRight, Heart, User } from 'lucide-react';
+import { X, Search, ShoppingBag, ArrowRight, ArrowUpRight, Heart, User, Glasses, Eye } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useRegionStore } from '@/store/useRegionStore';
 
 const MENU_LINKS = [
   { num: '01', label: 'Home', href: '/' },
   { num: '02', label: 'Sunglasses', href: '/products?category=sunglasses' },
-  { num: '03', label: 'Eyeglasses', href: '/products?category=eyeglasses' },
-  { num: '04', label: 'Shop', href: '/products' },
-  { num: '05', label: 'Editorial', href: '/editorial' },
-  { num: '06', label: 'Contact', href: '/contact' },
+  { num: '03', label: 'Optical Frames', href: '/products?category=eyeglasses' },
+  { num: '04', label: 'Full Collection', href: '/products' },
+  { num: '05', label: 'Wishlist', href: '/wishlist' },
+  { num: '06', label: 'Editorial', href: '/editorial' },
   { num: '07', label: 'Account', href: '/account' },
+  { num: '08', label: 'Contact', href: '/contact' },
 ];
 
 const ease = [0.19, 1, 0.22, 1] as const;
@@ -105,7 +106,7 @@ export default function Navbar() {
         animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
         transition={{ duration: 0.22, ease: 'easeOut' }}
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
-        className="fixed top-5 md:top-7 left-5 md:left-8 z-50 mix-blend-difference block"
+        className="fixed top-4 md:top-7 left-4 md:left-8 z-50 mix-blend-difference block"
       >
         <Link href="/">
           <span className="font-display font-bold text-xl tracking-widest text-white uppercase hover:text-gold-primary transition-colors">Jemy</span>
@@ -117,47 +118,64 @@ export default function Navbar() {
         animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
         transition={{ duration: 0.22, ease: 'easeOut' }}
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
-        className="fixed top-4 md:top-6 right-4 md:right-6 z-50 flex items-center bg-white/90 backdrop-blur-md pl-1.5 pr-1.5 py-1.5 rounded-full shadow-lg border border-black/5 gap-1"
+        className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 flex items-center bg-white/90 backdrop-blur-md pl-1 md:pl-1.5 pr-1 md:pr-1.5 py-1 md:py-1.5 rounded-full shadow-lg border border-black/5 gap-0.5 md:gap-1"
       >
-        {/* Search button */}
+        {/* Desktop Sunglasses & Optical collection links */}
+        <div className="hidden lg:flex items-center gap-1 mr-0.5">
+          <Link
+            href="/products?category=sunglasses"
+            className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
+          >
+            Sunglasses
+          </Link>
+          <Link
+            href="/products?category=eyeglasses"
+            className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
+          >
+            Optical
+          </Link>
+          <div className="w-px h-4 bg-black/10 mx-1" />
+        </div>
+
+        {/* Search button (all screens) */}
         <button
           onClick={() => setSearchOpen(true)}
-          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
           aria-label="Open search"
           title="Search"
         >
-          <Search size={16} />
+          <Search size={15} className="md:w-[17px] md:h-[17px]" />
         </button>
 
-        {/* Wishlist button */}
+        {/* Wishlist button (desktop / tablet) */}
         <Link
           href="/wishlist"
-          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="hidden md:flex w-10 h-10 items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
           aria-label="Wishlist"
           title="Wishlist"
         >
           <Heart size={16} />
         </Link>
 
-        {/* Add to Cart / Shopping Bag button */}
+        {/* Cart / Shopping Bag button (all screens) */}
         <button
           onClick={openCart}
-          className="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
           aria-label={itemCount > 0 ? `Shopping bag, ${itemCount} item${itemCount !== 1 ? 's' : ''}` : 'Shopping bag'}
           title="Cart"
         >
-          <ShoppingBag size={16} />
+          <ShoppingBag size={15} className="md:w-[17px] md:h-[17px]" />
           {itemCount > 0 && (
-            <span aria-hidden="true" className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-gold-primary text-indigo-950 text-[8px] font-bold flex items-center justify-center rounded-full">
+            <span aria-hidden="true" className="absolute top-1 md:top-1.5 right-1 md:right-1.5 w-3.5 h-3.5 bg-gold-primary text-indigo-950 text-[8px] font-bold flex items-center justify-center rounded-full">
               {itemCount}
             </span>
           )}
         </button>
 
-        {/* Account button */}
+        {/* Account button (desktop / tablet) */}
         <Link
           href="/account"
-          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="hidden md:flex w-10 h-10 items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
           aria-label="Account"
           title="Account"
         >
@@ -167,10 +185,10 @@ export default function Navbar() {
         {/* Admin button (strictly verified role in DB) */}
         {isAdmin && (
           <>
-            <div className="w-px h-5 bg-black/10 mx-0.5" />
+            <div className="hidden sm:block w-px h-4 bg-black/10 mx-0.5" />
             <Link
               href="/admin"
-              className="group flex items-center justify-center px-3.5 h-8 sm:h-9 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors"
+              className="group flex items-center justify-center px-2.5 sm:px-3.5 h-7 sm:h-9 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[9px] sm:text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors"
               title="Admin Panel"
             >
               Admin
@@ -178,7 +196,7 @@ export default function Navbar() {
           </>
         )}
 
-        <div className="w-px h-5 bg-black/10 mx-0.5" />
+        <div className="w-px h-4 bg-black/10 mx-0.5" />
 
         {/* Menu button */}
         <button
@@ -186,16 +204,67 @@ export default function Navbar() {
           onClick={() => setIsOpen(true)}
           aria-expanded={isOpen}
           aria-haspopup="dialog"
-          className="group flex items-center gap-2.5 px-5 h-10 rounded-full bg-indigo-950 text-white transition-all duration-400 hover:bg-gold-primary hover:text-indigo-950"
+          className="group flex items-center gap-1.5 md:gap-2.5 px-3 md:px-5 h-8 md:h-10 rounded-full bg-indigo-950 text-white transition-all duration-300 hover:bg-gold-primary hover:text-indigo-950"
           aria-label="Open navigation menu"
         >
-          <div className="flex flex-col gap-[4.5px] w-4" aria-hidden="true">
+          <div className="flex flex-col gap-[3.5px] md:gap-[4.5px] w-3.5 md:w-4" aria-hidden="true">
             <span className="block h-[1.5px] w-full bg-current rounded-full transition-all duration-300 group-hover:w-3/4" />
             <span className="block h-[1.5px] w-3/4 bg-current rounded-full transition-all duration-300 group-hover:w-full" />
           </div>
           <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em]">Menu</span>
         </button>
       </motion.div>
+
+      {/* ─── MOBILE QUICK DOCK (Thumb-zone luxury navigation) ─── */}
+      <AnimatePresence>
+        {!isOpen && !pathname?.startsWith('/checkout') && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: 20, x: '-50%' }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed bottom-5 left-1/2 z-40 md:hidden flex items-center bg-[#0c0c0c]/90 backdrop-blur-xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.5)] rounded-full px-2 py-1.5 gap-1 max-w-[92vw]"
+          >
+            <Link
+              href="/products?category=sunglasses"
+              className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] text-white hover:text-gold-primary hover:bg-white/10 transition-all flex items-center gap-1.5"
+            >
+              <Glasses size={13} className="text-gold-primary" />
+              <span>Sun</span>
+            </Link>
+
+            <div className="w-px h-3.5 bg-white/20" />
+
+            <Link
+              href="/products?category=eyeglasses"
+              className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] text-white hover:text-gold-primary hover:bg-white/10 transition-all flex items-center gap-1.5"
+            >
+              <Eye size={13} className="text-gold-primary" />
+              <span>Optical</span>
+            </Link>
+
+            <div className="w-px h-3.5 bg-white/20" />
+
+            <Link
+              href="/wishlist"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-gold-primary hover:bg-white/10 transition-colors"
+              aria-label="Wishlist"
+              title="Wishlist"
+            >
+              <Heart size={14} />
+            </Link>
+
+            <Link
+              href="/account"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-gold-primary hover:bg-white/10 transition-colors"
+              aria-label="Account"
+              title="Account"
+            >
+              <User size={14} />
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── MENU OVERLAY ─── */}
       <AnimatePresence mode="sync">
