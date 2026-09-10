@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { ArrowRight, ScanFace, Ruler, Shield, Search } from 'lucide-react';
+import { ArrowRight, ScanFace, Ruler, Shield, Search, Glasses, Eye } from 'lucide-react';
 import FaceShapeQuizModal from '@/components/eyewear/FaceShapeQuizModal';
 import CardExplosion from '@/components/ui/CardExplosion';
 import DualImageReveal from '@/components/ui/DualImageReveal';
@@ -263,15 +263,36 @@ function HeroSection({ onQuizOpen, banners }: { onQuizOpen: () => void, banners?
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 3.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-12 flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
+          className="mt-10 md:mt-12 flex flex-col items-center gap-3 w-full max-w-2xl mx-auto"
         >
-          <Link
-            href={banners?.[0]?.linkUrl || "/products"}
-            className="group relative overflow-hidden inline-flex items-center justify-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 text-white text-[12px] font-bold uppercase tracking-[0.15em] px-10 py-5 rounded-full hover:scale-[1.02] transition-transform duration-300 w-full sm:w-auto"
-          >
-            <span className="relative z-10 flex items-center gap-2 group-hover:text-black transition-colors duration-500">{banners?.[0]?.ctaText || 'Shop Frames'} <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" /></span>
-            <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1]" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+            {/* Primary: Shop Frames */}
+            <Link
+              href={banners?.[0]?.linkUrl || "/products"}
+              className="group relative overflow-hidden inline-flex items-center justify-center gap-2.5 bg-white text-indigo-950 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.16em] px-8 py-4 md:py-4.5 rounded-full hover:bg-gold-primary transition-all duration-300 w-full sm:w-auto shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <span className="relative z-10 flex items-center gap-2">{banners?.[0]?.ctaText || 'Shop Frames'} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></span>
+            </Link>
+
+            {/* Category Buttons: Sunglasses & Optical */}
+            <div className="flex items-center justify-center gap-2.5 w-full sm:w-auto">
+              <Link
+                href="/products?category=sunglasses"
+                className="group inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/25 hover:border-white/50 text-white hover:bg-white/20 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.15em] px-6 py-4 md:py-4.5 rounded-full transition-all duration-300 flex-1 sm:flex-initial hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Glasses size={14} className="text-gold-primary group-hover:scale-110 transition-transform" />
+                <span>Sunglasses</span>
+              </Link>
+
+              <Link
+                href="/products?category=eyeglasses"
+                className="group inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/25 hover:border-white/50 text-white hover:bg-white/20 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.15em] px-6 py-4 md:py-4.5 rounded-full transition-all duration-300 flex-1 sm:flex-initial hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Eye size={14} className="text-gold-primary group-hover:scale-110 transition-transform" />
+                <span>Optical</span>
+              </Link>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
