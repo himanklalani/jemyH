@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Package, FileText, MapPin, LogOut, ChevronRight, Clock, CheckCircle2, Loader2, XCircle } from 'lucide-react';
+import { Package, FileText, MapPin, LogOut, ChevronRight, Clock, CheckCircle2, Loader2, XCircle, Heart } from 'lucide-react';
 
-type Tab = 'orders' | 'prescriptions' | 'addresses';
+type Tab = 'orders' | 'prescriptions' | 'addresses' | 'wishlist';
 
 const STATUS_STYLES: Record<string, string> = {
   pending:    'bg-amber-50 text-amber-700',
@@ -80,6 +80,7 @@ export default function AccountPage() {
     { id: 'orders' as Tab,        label: 'Orders',        icon: Package },
     { id: 'prescriptions' as Tab, label: 'Prescriptions', icon: FileText },
     { id: 'addresses' as Tab,     label: 'Addresses',     icon: MapPin },
+    { id: 'wishlist' as Tab,      label: 'Wishlist',      icon: Heart },
   ];
 
   return (
@@ -268,6 +269,28 @@ export default function AccountPage() {
                   <MapPin size={48} className="text-indigo-900/15 mb-4" />
                   <h3 className="font-serif text-2xl text-indigo-900 mb-2">No saved addresses.</h3>
                   <p className="text-indigo-900/50 text-sm">Addresses from your orders will be saved here for faster checkout.</p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* WISHLIST TAB */}
+            {tab === 'wishlist' && (
+              <motion.div
+                key="wishlist"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-2xl border border-indigo-900/5">
+                  <Heart size={48} className="text-gold-primary/30 mb-4" />
+                  <h3 className="font-serif text-2xl text-indigo-900 mb-2">My Saved Wishlist</h3>
+                  <p className="text-indigo-900/50 text-sm mb-6 max-w-sm">Manage, view, and add your favorite frames to your bag directly.</p>
+                  <Link
+                    href="/wishlist"
+                    className="inline-flex items-center gap-2 bg-indigo-900 text-platinum-100 text-[11px] font-bold uppercase tracking-widest px-6 py-3.5 rounded-xl hover:bg-gold-primary hover:text-indigo-900 transition-all"
+                  >
+                    Open Wishlist <ChevronRight size={13} />
+                  </Link>
                 </div>
               </motion.div>
             )}

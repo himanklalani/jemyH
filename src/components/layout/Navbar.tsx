@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { X, Search, ShoppingBag, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { X, Search, ShoppingBag, ArrowRight, ArrowUpRight, Heart, User } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
 import { useRegionStore } from '@/store/useRegionStore';
 
@@ -119,20 +119,34 @@ export default function Navbar() {
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
         className="fixed top-4 md:top-6 right-4 md:right-6 z-50 flex items-center bg-white/90 backdrop-blur-md pl-1.5 pr-1.5 py-1.5 rounded-full shadow-lg border border-black/5 gap-1"
       >
+        {/* Search button */}
         <button
           onClick={() => setSearchOpen(true)}
-          className="w-10 h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
           aria-label="Open search"
+          title="Search"
         >
-          <Search size={17} />
+          <Search size={16} />
         </button>
 
+        {/* Wishlist button */}
+        <Link
+          href="/wishlist"
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          aria-label="Wishlist"
+          title="Wishlist"
+        >
+          <Heart size={16} />
+        </Link>
+
+        {/* Add to Cart / Shopping Bag button */}
         <button
           onClick={openCart}
-          className="relative w-10 h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
           aria-label={itemCount > 0 ? `Shopping bag, ${itemCount} item${itemCount !== 1 ? 's' : ''}` : 'Shopping bag'}
+          title="Cart"
         >
-          <ShoppingBag size={17} />
+          <ShoppingBag size={16} />
           {itemCount > 0 && (
             <span aria-hidden="true" className="absolute top-1.5 right-1.5 w-3.5 h-3.5 bg-gold-primary text-indigo-950 text-[8px] font-bold flex items-center justify-center rounded-full">
               {itemCount}
@@ -140,33 +154,31 @@ export default function Navbar() {
           )}
         </button>
 
-        <div className="w-px h-5 bg-black/10 mx-0.5" />
+        {/* Account button */}
+        <Link
+          href="/account"
+          className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          aria-label="Account"
+          title="Account"
+        >
+          <User size={16} />
+        </Link>
 
+        {/* Admin button (strictly verified role in DB) */}
         {isAdmin && (
-          <a
-            href="/admin"
-            className="group flex items-center justify-center px-4 h-10 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors mr-1"
-          >
-            Admin
-          </a>
+          <>
+            <div className="w-px h-5 bg-black/10 mx-0.5" />
+            <a
+              href="/admin"
+              className="group flex items-center justify-center px-3.5 h-8 sm:h-9 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors"
+              title="Admin Panel"
+            >
+              Admin
+            </a>
+          </>
         )}
 
-        {/* Desktop quick-category links - 1-click access to top collections */}
-        <div className="hidden lg:flex items-center gap-1 mr-1">
-          <Link
-            href="/products?category=sunglasses"
-            className="px-3 h-10 flex items-center text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-950/60 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
-          >
-            Sun
-          </Link>
-          <Link
-            href="/products?category=eyeglasses"
-            className="px-3 h-10 flex items-center text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-950/60 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
-          >
-            Optical
-          </Link>
-          <div className="w-px h-5 bg-black/10 mx-0.5" />
-        </div>
+        <div className="w-px h-5 bg-black/10 mx-0.5" />
 
         {/* Menu button */}
         <button
