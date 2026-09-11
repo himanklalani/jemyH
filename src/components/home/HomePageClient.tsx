@@ -685,9 +685,9 @@ export default function HomePageClient({
         color: '#EAEBE6',
         ease: 'none',
         scrollTrigger: {
-          trigger: '#early-dark-zone',
+          trigger: '#frame-archive-trigger',
           start: 'top 85%',
-          end: 'top 15%',
+          end: 'top 20%',
           scrub: 1.5, // 1.5s fluid momentum damping for ultra-luxurious feel
           invalidateOnRefresh: true,
         },
@@ -762,7 +762,7 @@ export default function HomePageClient({
       </div>
       <FeaturedCollection title={"Bestsellers"} products={bestsellers} link="/products" />
       
-      <div id="early-dark-zone" className="py-12">
+      <div className="py-12">
         <FeaturedCollection 
           title="For You"
           products={recommendations} 
@@ -776,7 +776,9 @@ export default function HomePageClient({
         link="/products?category=sunglasses"
       />
       <CardExplosion />
-      <StackedGlassDeck />
+      <div id="frame-archive-trigger" className="w-full">
+        <StackedGlassDeck />
+      </div>
       <ManifestoSection />
       <ShopByGeometry onQuizOpen={() => setQuizOpen(true)} />
       <AdvertisementScrollStack slides={editorialSlides} />
