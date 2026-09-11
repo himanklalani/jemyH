@@ -26,6 +26,10 @@ const CartItemSchema = new Schema({
 export interface ICart extends Document {
   user?: mongoose.Types.ObjectId;
   sessionId?: string;
+  guestEmail?: string;
+  guestName?: string;
+  abandonedEmailSentAt?: Date;
+  recoveryDiscountCode?: string;
   items: any[];
   region: 'US' | 'IN';
   currency: string;
@@ -35,6 +39,10 @@ export interface ICart extends Document {
 const CartSchema: Schema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   sessionId: { type: String, index: true },
+  guestEmail: { type: String, trim: true, lowercase: true, index: true },
+  guestName: { type: String, trim: true },
+  abandonedEmailSentAt: { type: Date, default: null, index: true },
+  recoveryDiscountCode: { type: String },
   items: [CartItemSchema],
   region: { type: String, enum: ['US', 'IN'], required: true },
   currency: { type: String, required: true }

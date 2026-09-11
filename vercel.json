@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/admin/cart-audit/recover",
+      "schedule": "0 */2 * * *"
+    }
+  ]
+}

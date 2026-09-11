@@ -161,21 +161,33 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PATCH /api/cart - Update Quantity
+// PATCH /api/cart - Update Quantity or Guest Contact Details
 export async function PATCH(req: NextRequest) {
   try {
     const { userId, sessionId, region, ipAddress } = await getCartIdentifier(req);
-    const { productId, quantity } = await req.json();
+    const body = await req.json();
+    const { productId, quantity, guestEmail, guestName } = body;
     
-    if (quantity < 1) return NextResponse.json({ success: false, message: 'Use DELETE to remove items' }, { status: 400 });
-
     await dbConnect();
+    let query = userId ? { user: userId } : { sessionId, user: { $exists: false } };
+
+    // Support updating guest email / name for abandoned cart recovery
+    if (guestEmail) {
+      await Cart.findOneAndUpdate(
+        query,
+        { $set: { guestEmail: guestEmail.toLowerCase().trim(), ...(guestName ? { guestName } : {}) } }
+      );
+      if (!productId) {
+        return NextResponse.json({ success: true, message: 'Cart contact updated' });
+      }
+    }
+
+    if (quantity !== undefined && quantity < 1) return NextResponse.json({ success: false, message: 'Use DELETE to remove items' }, { status: 400 });
+
     const product = await Product.findById(productId);
     if (!product || product.stock < quantity) {
       return NextResponse.json({ success: false, message: 'Not enough stock' }, { status: 400 });
     }
-
-    let query = userId ? { user: userId } : { sessionId, user: { $exists: false } };
     
     // Update specific item using array filters
     const updatedCart = await Cart.findOneAndUpdate(

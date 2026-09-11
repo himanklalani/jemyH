@@ -188,10 +188,34 @@ export default function CheckoutPage() {
                 <h2 className="font-serif text-2xl text-indigo-900">Contact</h2>
                 <div>
                   <label className={labelCls}>Email Address *</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" className={inputCls} />
+                  <input 
+                    type="email" 
+                    value={email} 
+                    onChange={e => setEmail(e.target.value)} 
+                    onBlur={() => {
+                      if (email && email.includes('@')) {
+                        fetch('/api/cart', { 
+                          method: 'PATCH', 
+                          headers: { 'Content-Type': 'application/json' }, 
+                          body: JSON.stringify({ guestEmail: email }) 
+                        }).catch(() => {});
+                      }
+                    }}
+                    placeholder="you@example.com" 
+                    className={inputCls} 
+                  />
                 </div>
                 <button
-                  onClick={() => { if (!email) { setError('Email is required.'); return; } setError(''); setStep('shipping'); }}
+                  onClick={() => { 
+                    if (!email) { setError('Email is required.'); return; } 
+                    setError(''); 
+                    fetch('/api/cart', { 
+                      method: 'PATCH', 
+                      headers: { 'Content-Type': 'application/json' }, 
+                      body: JSON.stringify({ guestEmail: email }) 
+                    }).catch(() => {});
+                    setStep('shipping'); 
+                  }}
                   className="w-full flex items-center justify-between bg-indigo-900 text-platinum-100 px-7 py-4 rounded-xl font-bold text-[11px] uppercase tracking-[0.12em] hover:bg-gold-primary hover:text-indigo-900 transition-all"
                 >
                   Continue to Shipping <ChevronRight size={16} />
@@ -207,7 +231,22 @@ export default function CheckoutPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <label className={labelCls}>Full Name *</label>
-                    <input type="text" value={address.name} onChange={e => setAddress(a => ({ ...a, name: e.target.value }))} placeholder="Jane Doe" className={inputCls} />
+                    <input 
+                      type="text" 
+                      value={address.name} 
+                      onChange={e => setAddress(a => ({ ...a, name: e.target.value }))} 
+                      onBlur={() => {
+                        if (address.name) {
+                          fetch('/api/cart', { 
+                            method: 'PATCH', 
+                            headers: { 'Content-Type': 'application/json' }, 
+                            body: JSON.stringify({ guestName: address.name }) 
+                          }).catch(() => {});
+                        }
+                      }}
+                      placeholder="Jane Doe" 
+                      className={inputCls} 
+                    />
                   </div>
                   <div className="md:col-span-2">
                     <label className={labelCls}>Street Address *</label>

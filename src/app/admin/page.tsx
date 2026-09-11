@@ -2,13 +2,38 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { DollarSign, ShoppingCart, Activity, Package, AlertCircle } from 'lucide-react';
+import { DollarSign, ShoppingCart, Activity, Package, AlertCircle, Send, Loader2, MailCheck } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [kpis, setKpis] = useState<any>(null);
   const [cartMetrics, setCartMetrics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [recovering, setRecovering] = useState(false);
+  const [recoveryFeedback, setRecoveryFeedback] = useState<string | null>(null);
   const router = useRouter();
+
+  const handleTriggerRecovery = async () => {
+    setRecovering(true);
+    setRecoveryFeedback(null);
+    try {
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('jemy_token');
+      const res = await fetch('/api/admin/cart-audit/recover', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setRecoveryFeedback(`Recovery Scan: Scanned ${data.scanned} carts (${data.sentCount} emails queued/sent, ${data.skippedCount} skipped).`);
+        setTimeout(() => setRecoveryFeedback(null), 8000);
+      } else {
+        setRecoveryFeedback(`Recovery failed: ${data.message}`);
+      }
+    } catch {
+      setRecoveryFeedback('Network error while scanning abandoned carts.');
+    } finally {
+      setRecovering(false);
+    }
+  };
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -106,9 +131,18 @@ export default function AdminDashboard() {
     <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 ease-[var(--ease-power4-out)]">
       
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-serif text-[var(--color-gold-primary)] tracking-tight mb-2">Executive Overview</h1>
-        <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide">Real-time metrics and system analytics.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-serif text-[var(--color-gold-primary)] tracking-tight mb-2">Executive Overview</h1>
+          <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide">Real-time metrics, automated cart recovery, and system analytics.</p>
+        </div>
+        
+        {recoveryFeedback && (
+          <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-gold-primary/10 border border-gold-primary/30 text-gold-primary text-xs font-semibold animate-in fade-in">
+            <MailCheck size={16} />
+            <span>{recoveryFeedback}</span>
+          </div>
+        )}
       </div>
 
       {/* KPI Grid */}
@@ -134,18 +168,28 @@ export default function AdminDashboard() {
         </div>
 
         {/* Cart Abandonment */}
-        <div className="bg-[var(--color-admin-surface)] border border-[var(--color-admin-border)] rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--color-admin-text-muted)] transition-colors duration-500">
+        <div className="bg-[var(--color-admin-surface)] border border-[var(--color-admin-border)] rounded-2xl p-6 relative overflow-hidden group hover:border-[var(--color-gold-primary)]/40 transition-colors duration-500">
           <div className="flex justify-between items-start mb-4">
             <div className="w-10 h-10 rounded-xl bg-[var(--color-admin-bg)] flex items-center justify-center border border-[var(--color-admin-border)]">
-              <ShoppingCart size={18} className="text-[var(--color-admin-text-muted)] group-hover:text-[var(--color-admin-text)] transition-colors" />
+              <ShoppingCart size={18} className="text-[var(--color-gold-primary)]" />
             </div>
+            <button
+              onClick={handleTriggerRecovery}
+              disabled={recovering}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--color-gold-primary)]/10 text-[var(--color-gold-primary)] hover:bg-[var(--color-gold-primary)] hover:text-indigo-950 font-semibold text-[10px] uppercase tracking-wider transition-all disabled:opacity-50"
+              title="Trigger abandoned cart email recovery scan now"
+            >
+              {recovering ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
+              <span>{recovering ? 'Scanning...' : 'Recover Carts'}</span>
+            </button>
           </div>
           <div>
             <p className="text-[var(--color-admin-text-muted)] text-xs uppercase tracking-wider font-semibold mb-1">Cart Abandonment</p>
             <h2 className="text-3xl font-serif text-[var(--color-admin-text)]">{cartMetrics?.metrics?.abandonmentRate || '0.00%'}</h2>
-            <p className="mt-3 text-xs text-[var(--color-admin-text-muted)]">
-              {cartMetrics?.metrics?.totalUniqueCarts} active carts
-            </p>
+            <div className="flex items-center justify-between mt-3 text-xs text-[var(--color-admin-text-muted)]">
+              <span>{cartMetrics?.metrics?.totalUniqueCarts || 0} active carts</span>
+              <span className="text-[10px] text-green-400 font-mono">Cron: 2h cycle</span>
+            </div>
           </div>
         </div>
 
