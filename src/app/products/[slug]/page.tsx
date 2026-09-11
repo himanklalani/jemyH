@@ -150,19 +150,7 @@ export default function ProductDetailsPage() {
       />
 
       <div className="min-h-screen bg-[#EAEBE6] pt-[68px]">
-
-        {/* Breadcrumb */}
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-6">
-          <nav className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-indigo-900/40 font-semibold">
-            <Link href="/" className="hover:text-gold-primary transition-colors">Home</Link>
-            <span>/</span>
-            <Link href="/products" className="hover:text-gold-primary transition-colors">Frames</Link>
-            <span>/</span>
-            <span className="text-indigo-900/70 truncate max-w-[200px]">{product.name}</span>
-          </nav>
-        </div>
-
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-10">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-6 md:py-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
             {/* ─── Left: Image Stack ─── */}
@@ -377,13 +365,22 @@ export default function ProductDetailsPage() {
 
           {/* ─── Technical Specs ─── */}
           {specs.length > 0 && (
-            <div className="mt-20 border-t border-indigo-900/8 pt-16 mb-16">
-              <h2 className="font-display font-bold tracking-tight text-3xl text-indigo-900 mb-10 text-balance">Frame Specifications</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="mt-16 md:mt-24 border-t border-indigo-900/8 pt-12 md:pt-16 mb-16">
+              <h2 className="font-display font-bold tracking-tight text-2xl sm:text-3xl md:text-4xl text-indigo-900 mb-8 md:mb-10 text-balance">
+                Frame Specifications
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                 {specs.map(spec => (
-                  <div key={spec.label} className="bg-white rounded-2xl p-5 border border-indigo-900/5">
-                    <p className="text-[10px] uppercase tracking-widest text-indigo-900/40 font-semibold mb-2">{spec.label}</p>
-                    <p className="font-display font-bold text-xl text-indigo-900 capitalize">{spec.value}</p>
+                  <div 
+                    key={spec.label} 
+                    className="bg-white rounded-2xl md:rounded-3xl p-4 sm:p-5 border border-indigo-900/5 shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col justify-between min-h-[90px] sm:min-h-[102px]"
+                  >
+                    <p className="text-[10px] md:text-[11px] uppercase tracking-[0.16em] text-indigo-900/40 font-semibold mb-1.5">
+                      {spec.label}
+                    </p>
+                    <p className="font-display font-bold text-base sm:text-lg md:text-xl text-indigo-900 capitalize break-words leading-tight">
+                      {spec.value}
+                    </p>
                   </div>
                 ))}
               </div>
