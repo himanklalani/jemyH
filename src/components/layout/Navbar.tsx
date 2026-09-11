@@ -32,6 +32,19 @@ export default function Navbar() {
   const menuCloseRef = useRef<HTMLButtonElement>(null);
 
   const pathname = usePathname();
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Reveal desktop category links once user scrolls past hero (approx 50% of viewport)
+      const threshold = window.innerHeight * 0.5;
+      setScrolledPastHero(window.scrollY > threshold);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -120,22 +133,33 @@ export default function Navbar() {
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
         className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 flex items-center bg-white/90 backdrop-blur-md pl-1 md:pl-1.5 pr-1 md:pr-1.5 py-1 md:py-1.5 rounded-full shadow-lg border border-black/5 gap-0.5 md:gap-1"
       >
-        {/* Desktop Sunglasses & Optical collection links */}
-        <div className="hidden lg:flex items-center gap-1 mr-0.5">
-          <Link
-            href="/products?category=sunglasses"
-            className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
-          >
-            Sunglasses
-          </Link>
-          <Link
-            href="/products?category=eyeglasses"
-            className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200"
-          >
-            Optical
-          </Link>
-          <div className="w-px h-4 bg-black/10 mx-1" />
-        </div>
+        {/* Desktop Sunglasses & Optical collection links (hidden during hero, expands in when scrolled) */}
+        <AnimatePresence>
+          {(pathname !== '/' || scrolledPastHero) && (
+            <motion.div
+              key="desktop-category-links"
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="hidden lg:flex items-center gap-1 mr-0.5 overflow-hidden whitespace-nowrap"
+            >
+              <Link
+                href="/products?category=sunglasses"
+                className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200 shrink-0"
+              >
+                Sunglasses
+              </Link>
+              <Link
+                href="/products?category=eyeglasses"
+                className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200 shrink-0"
+              >
+                Optical
+              </Link>
+              <div className="w-px h-4 bg-black/10 mx-1 shrink-0" />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Search button (all screens) */}
         <button

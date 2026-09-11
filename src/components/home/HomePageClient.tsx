@@ -269,13 +269,13 @@ function HeroSection({ onQuizOpen, banners }: { onQuizOpen: () => void, banners?
             {/* Primary: Shop Frames */}
             <Link
               href={banners?.[0]?.linkUrl || "/products"}
-              className="group relative overflow-hidden inline-flex items-center justify-center gap-2.5 bg-white text-indigo-950 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.16em] px-8 py-4 md:py-4.5 rounded-full hover:bg-gold-primary transition-all duration-300 w-full sm:w-auto shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+              className="group relative overflow-hidden inline-flex items-center justify-center gap-2.5 bg-white text-indigo-950 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.16em] px-8 py-4 md:py-4.5 rounded-full hover:bg-gold-primary transition-all duration-300 w-auto shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
             >
               <span className="relative z-10 flex items-center gap-2">{banners?.[0]?.ctaText || 'Shop Frames'} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" /></span>
             </Link>
 
-            {/* Category Buttons: Sunglasses & Optical */}
-            <div className="flex items-center justify-center gap-2.5 w-full sm:w-auto">
+            {/* Category Buttons: Sunglasses & Optical (Desktop/Tablet only; on mobile the bottom quick dock handles this) */}
+            <div className="hidden sm:flex items-center justify-center gap-2.5 w-auto">
               <Link
                 href="/products?category=sunglasses"
                 className="group inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/25 hover:border-white/50 text-white hover:bg-white/20 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.15em] px-6 py-4 md:py-4.5 rounded-full transition-all duration-300 flex-1 sm:flex-initial hover:scale-[1.02] active:scale-[0.98]"
@@ -669,7 +669,9 @@ export default function HomePageClient({
   useGSAP(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    // Buttery-smooth scrubbed theme transition tied directly to scroll momentum
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+    // Ultra-smooth scrubbed theme transition optimized for phone touchscreens and desktop
     gsap.fromTo(
       themeWrapperRef.current,
       {
@@ -686,10 +688,16 @@ export default function HomePageClient({
         ease: 'none',
         scrollTrigger: {
           trigger: '#frame-archive-trigger',
-          start: 'top 85%',
-          end: 'top 20%',
-          scrub: 1.5, // 1.5s fluid momentum damping for ultra-luxurious feel
+          start: isMobile ? 'top 95%' : 'top 85%',
+          end: isMobile ? 'top 30%' : 'top 20%',
+          scrub: isMobile ? 0.4 : 1.2,
           invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (typeof document !== 'undefined' && document.body) {
+              const currentBg = self.progress > 0.5 ? '#1C2740' : '#EAEBE6';
+              document.body.style.backgroundColor = currentBg;
+            }
+          },
         },
       }
     );
@@ -711,7 +719,7 @@ export default function HomePageClient({
   return (
     <div 
       ref={themeWrapperRef} 
-      className="theme-wrapper overflow-clip w-full max-w-[100vw] transition-colors duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" 
+      className="theme-wrapper overflow-clip w-full max-w-[100vw] will-change-[background-color,color]" 
       style={{ 
         '--theme-bg': '#EAEBE6', 
         '--theme-text': '#1C2740', 
