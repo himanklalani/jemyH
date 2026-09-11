@@ -11,6 +11,7 @@ export interface IProduct extends Document {
   slug: string;
   description: string;
   category: 'sunglasses' | 'eyeglasses' | 'perfume' | 'addon' | 'accessories' | string;
+  subcategory?: string;
   images: string[];
   pricing: {
     US?: { amount: number; currency: string; compareAtAmount?: number };
@@ -35,6 +36,7 @@ const ProductSchema: Schema = new Schema({
   slug: { type: String, required: true, unique: true },
   description: { type: String, required: true },
   category: { type: String, required: true },
+  subcategory: { type: String },
   images: [{ type: String }],
   pricing: {
     US: PricingSchema,
@@ -54,6 +56,7 @@ const ProductSchema: Schema = new Schema({
   features: [{ type: String }]
 }, { timestamps: true, discriminatorKey: 'category' });
 
+ProductSchema.index({ category: 1, subcategory: 1 });
 ProductSchema.index({ category: 1, aesthetics: 1 });
 ProductSchema.index({ isAddon: 1 });
 ProductSchema.index({ name: 'text', description: 'text' });

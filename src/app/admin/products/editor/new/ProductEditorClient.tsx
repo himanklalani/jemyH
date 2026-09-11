@@ -11,6 +11,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   
+  const [allCategories, setAllCategories] = useState<any[]>([]);
   const [customCategories, setCustomCategories] = useState<{ name: string; slug: string }[]>([]);
   
   const [formData, setFormData] = useState<any>({
@@ -18,6 +19,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
     slug: '',
     description: '',
     category: 'eyeglasses',
+    subcategory: '',
     stock: 0,
     regionAvailability: 'BOTH',
     pricing: { US: { amount: 0, currency: 'USD' }, IN: { amount: 0, currency: 'INR' } },
@@ -33,6 +35,8 @@ export default function ProductEditorClient({ productId }: { productId: string }
     frameMeasurements: { lensWidth: 0, bridgeWidth: 0, templeLength: 0 },
     frameMaterial: 'Acetate',
     frameShape: 'round',
+    frameColor: '',
+    frameSize: 'M',
     // Eyeglasses Specific
     lensTypes: ['single-vision'],
     rxPowerRange: { minSphere: -6.0, maxSphere: 4.0, minCylinder: -2.0, maxCylinder: 0 },
@@ -63,7 +67,8 @@ export default function ProductEditorClient({ productId }: { productId: string }
         });
         const data = await res.json();
         if (data.success && Array.isArray(data.categories)) {
-          setCustomCategories(data.categories.map((c: any) => ({ name: c.name, slug: c.slug })));
+          setAllCategories(data.categories);
+          setCustomCategories(data.categories.filter((c: any) => !c.parentId && !c.parentSlug).map((c: any) => ({ name: c.name, slug: c.slug })));
         }
       } catch (err) {
         console.error('Failed to load categories', err);
@@ -230,57 +235,94 @@ export default function ProductEditorClient({ productId }: { productId: string }
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-6">
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Category <span className="text-red-500 ml-1">*</span></label>
-              <select 
-                value={formData.category} 
-                onChange={e => {
-                  const nextCat = e.target.value;
-                  const isNowAddon = nextCat === 'addon' ? true : formData.isAddon;
-                  const reqRx = nextCat === 'eyeglasses';
-                  setFormData({
-                    ...formData, 
-                    category: nextCat,
-                    isAddon: isNowAddon,
-                    requiresPrescription: reqRx,
-                  });
-                }} 
-                className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]"
-              >
-                <optgroup label="Core Eyewear">
-                  <option value="eyeglasses">Eyeglasses (Optical)</option>
-                  <option value="sunglasses">Sunglasses</option>
-                </optgroup>
-                <optgroup label="Accessories & Essentials">
-                  <option value="accessories">Accessories (Cases, Chains, Cloths)</option>
-                  <option value="addon">Add-on / Upsell</option>
-                  <option value="perfume">Perfume & Fragrance</option>
-                </optgroup>
-                {customCategories.length > 0 && (
-                  <optgroup label="Custom Categories">
-                    {customCategories
-                      .filter(c => !['eyeglasses', 'sunglasses', 'accessories', 'addon', 'perfume'].includes(c.slug))
-                      .map(c => (
-                        <option key={c.slug} value={c.slug}>{c.name}</option>
-                      ))}
-                  </optgroup>
-                )}
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Base Stock <span className="text-red-500 ml-1">*</span></label>
-              <input type="number" required value={formData.stock ?? ''} onChange={e => setFormData({...formData, stock: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
-            </div>
-            <div className="space-y-2">
-              <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Availability</label>
-              <select value={formData.regionAvailability} onChange={e => setFormData({...formData, regionAvailability: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]">
-                <option value="BOTH">Available in Both (US & IN)</option>
-                <option value="US">Available in US Only</option>
-                <option value="IN">Available in IN Only</option>
-              </select>
-            </div>
-          </div>
+          {/* Dynamic Available Subcategories */}
+          {(() => {
+            const availableSubcategories = allCategories.filter(
+              (c: any) => (c.parentSlug && c.parentSlug.toLowerCase() === formData.category?.toLowerCase()) ||
+                          (c.parentId && allCategories.find((p: any) => p._id === c.parentId)?.slug.toLowerCase() === formData.category?.toLowerCase())
+            );
+
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Category <span className="text-red-500 ml-1">*</span></label>
+                  <select 
+                    value={formData.category} 
+                    onChange={e => {
+                      const nextCat = e.target.value;
+                      const isNowAddon = nextCat === 'addon' ? true : formData.isAddon;
+                      const reqRx = nextCat === 'eyeglasses';
+                      setFormData({
+                        ...formData, 
+                        category: nextCat,
+                        subcategory: '',
+                        isAddon: isNowAddon,
+                        requiresPrescription: reqRx,
+                      });
+                    }} 
+                    className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]"
+                  >
+                    <optgroup label="Core Eyewear">
+                      <option value="eyeglasses">Eyeglasses (Optical)</option>
+                      <option value="sunglasses">Sunglasses</option>
+                    </optgroup>
+                    <optgroup label="Accessories & Essentials">
+                      <option value="accessories">Accessories (Cases, Chains, Cloths)</option>
+                      <option value="addon">Add-on / Upsell</option>
+                      <option value="perfume">Perfume & Fragrance</option>
+                    </optgroup>
+                    {customCategories.length > 0 && (
+                      <optgroup label="Custom Root Categories">
+                        {customCategories
+                          .filter(c => !['eyeglasses', 'sunglasses', 'accessories', 'addon', 'perfume'].includes(c.slug))
+                          .map(c => (
+                            <option key={c.slug} value={c.slug}>{c.name}</option>
+                          ))}
+                      </optgroup>
+                    )}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Sub-category</label>
+                    <Link href="/admin/categories" target="_blank" className="text-[10px] text-[var(--color-gold-primary)] hover:underline font-mono">
+                      + Manage
+                    </Link>
+                  </div>
+                  <select
+                    value={formData.subcategory || ''}
+                    onChange={e => setFormData({ ...formData, subcategory: e.target.value })}
+                    disabled={availableSubcategories.length === 0}
+                    className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)] disabled:opacity-40"
+                  >
+                    <option value="">
+                      {availableSubcategories.length > 0 ? '[General / None]' : `[No subcategories]`}
+                    </option>
+                    {availableSubcategories.map((sub: any) => (
+                      <option key={sub.slug} value={sub.slug}>
+                        ↳ {sub.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Base Stock <span className="text-red-500 ml-1">*</span></label>
+                  <input type="number" required value={formData.stock ?? ''} onChange={e => setFormData({...formData, stock: e.target.value === '' ? '' : parseInt(e.target.value)})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Availability</label>
+                  <select value={formData.regionAvailability} onChange={e => setFormData({...formData, regionAvailability: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]">
+                    <option value="BOTH">Available in Both (US & IN)</option>
+                    <option value="US">Available in US Only</option>
+                    <option value="IN">Available in IN Only</option>
+                  </select>
+                </div>
+              </div>
+            );
+          })()}
 
           <div className="space-y-2">
             <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Description <span className="text-red-500 ml-1">*</span></label>
@@ -387,6 +429,28 @@ export default function ProductEditorClient({ productId }: { productId: string }
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Frame Material</label>
                 <input type="text" value={formData.frameMaterial} onChange={e => setFormData({...formData, frameMaterial: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 pt-4">
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Frame Color</label>
+                <input
+                  type="text"
+                  value={formData.frameColor || ''}
+                  onChange={e => setFormData({...formData, frameColor: e.target.value})}
+                  placeholder="e.g. Matte Black, Tortoise, Gold, Navy"
+                  className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Frame Size</label>
+                <select value={formData.frameSize || 'M'} onChange={e => setFormData({...formData, frameSize: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]">
+                  <option value="S">S — Small</option>
+                  <option value="M">M — Medium</option>
+                  <option value="L">L — Large</option>
+                  <option value="Custom">Custom</option>
+                </select>
               </div>
             </div>
 

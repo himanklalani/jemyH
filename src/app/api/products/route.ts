@@ -24,6 +24,9 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('category');
     if (category) query.category = category;
 
+    const subcategory = searchParams.get('subcategory');
+    if (subcategory) query.subcategory = subcategory;
+
     const gender = searchParams.get('gender');
     if (gender) query.gender = gender;
 
