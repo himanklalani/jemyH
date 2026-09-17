@@ -181,82 +181,84 @@ export default function AdminProductsPage() {
 
       {/* Data Table */}
       <div className="bg-[var(--color-admin-surface)] rounded-xl border border-[var(--color-admin-border)] overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-[var(--color-admin-bg)] border-b border-[var(--color-admin-border)]">
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Product</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Category</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Price (US / IN)</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Stock</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product._id} className="border-b border-[var(--color-admin-border)] last:border-0 hover:bg-[var(--color-admin-surface-hover)] transition-colors group">
-                <td className="p-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] overflow-hidden flex items-center justify-center shrink-0">
-                      {product.images?.[0] ? (
-                        <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <Archive size={16} className="text-[var(--color-admin-text-muted)]" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-medium text-[var(--color-admin-text)] group-hover:text-[var(--color-gold-primary)] transition-colors">{product.name}</p>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        {product.type === 'EyewearProduct' && (
-                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-admin-accent)]/10 text-[var(--color-admin-accent)] inline-block">Optical</span>
-                        )}
-                        {product.isAddon && (
-                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-gold-primary)]/15 text-[var(--color-gold-primary)] font-bold inline-block">Cart Upsell</span>
-                        )}
-                        {product.category === 'accessories' && !product.isAddon && (
-                          <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold inline-block">Accessory</span>
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse min-w-[800px]">
+            <thead>
+              <tr className="bg-[var(--color-admin-bg)] border-b border-[var(--color-admin-border)]">
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Product</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Category</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Price (US / IN)</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Stock</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product._id} className="border-b border-[var(--color-admin-border)] last:border-0 hover:bg-[var(--color-admin-surface-hover)] transition-colors group">
+                  <td className="p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-lg bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] overflow-hidden flex items-center justify-center shrink-0">
+                        {product.images?.[0] ? (
+                          <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <Archive size={16} className="text-[var(--color-admin-text-muted)]" />
                         )}
                       </div>
+                      <div>
+                        <p className="font-medium text-[var(--color-admin-text)] group-hover:text-[var(--color-gold-primary)] transition-colors">{product.name}</p>
+                        <div className="flex items-center gap-1.5 mt-1">
+                          {product.type === 'EyewearProduct' && (
+                            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-admin-accent)]/10 text-[var(--color-admin-accent)] inline-block">Optical</span>
+                          )}
+                          {product.isAddon && (
+                            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[var(--color-gold-primary)]/15 text-[var(--color-gold-primary)] font-bold inline-block">Cart Upsell</span>
+                          )}
+                          {product.category === 'accessories' && !product.isAddon && (
+                            <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold inline-block">Accessory</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="p-4 text-sm text-[var(--color-admin-text-muted)] capitalize">{product.category}</td>
-                <td className="p-4 text-sm text-[var(--color-admin-text-muted)]">
-                  ${product.pricing?.US?.amount || 0} / ₹{product.pricing?.IN?.amount || 0}
-                </td>
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
-                    <span className={`text-sm font-medium ${product.stock < 10 ? 'text-red-400' : 'text-[var(--color-admin-text)]'}`}>
-                      {product.stock} units
-                    </span>
-                    <button 
-                      onClick={() => setStockModal({ isOpen: true, product, adjustment: 0, reason: '' })}
-                      className="p-1.5 rounded bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] text-[var(--color-admin-text-muted)] hover:text-[var(--color-gold-primary)] hover:border-[var(--color-gold-primary)] transition-colors"
-                      title="Adjust Stock"
-                    >
-                      <Activity size={14} />
-                    </button>
-                  </div>
-                </td>
-                <td className="p-4 text-right">
-                  <div className="flex justify-end gap-2">
-                    <Link 
-                      href={`/admin/products/editor/${product._id}`}
-                      className="p-2 text-[var(--color-admin-text-muted)] hover:text-[var(--color-admin-text)] bg-[var(--color-admin-bg)] rounded-lg transition-colors border border-transparent hover:border-[var(--color-admin-border)]"
-                    >
-                      <Edit2 size={16} />
-                    </Link>
-                    <button 
-                      onClick={() => handleDelete(product._id)}
-                      className="p-2 text-[var(--color-admin-text-muted)] hover:text-red-400 bg-[var(--color-admin-bg)] rounded-lg transition-colors border border-transparent hover:border-red-400/30"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                  </td>
+                  <td className="p-4 text-sm text-[var(--color-admin-text-muted)] capitalize">{product.category}</td>
+                  <td className="p-4 text-sm text-[var(--color-admin-text-muted)]">
+                    ${product.pricing?.US?.amount || 0} / ₹{product.pricing?.IN?.amount || 0}
+                  </td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <span className={`text-sm font-medium ${product.stock < 10 ? 'text-red-400' : 'text-[var(--color-admin-text)]'}`}>
+                        {product.stock} units
+                      </span>
+                      <button 
+                        onClick={() => setStockModal({ isOpen: true, product, adjustment: 0, reason: '' })}
+                        className="p-1.5 rounded bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] text-[var(--color-admin-text-muted)] hover:text-[var(--color-gold-primary)] hover:border-[var(--color-gold-primary)] transition-colors"
+                        title="Adjust Stock"
+                      >
+                        <Activity size={14} />
+                      </button>
+                    </div>
+                  </td>
+                  <td className="p-4 text-right">
+                    <div className="flex justify-end gap-2">
+                      <Link 
+                        href={`/admin/products/editor/${product._id}`}
+                        className="p-2 text-[var(--color-admin-text-muted)] hover:text-[var(--color-admin-text)] bg-[var(--color-admin-bg)] rounded-lg transition-colors border border-transparent hover:border-[var(--color-admin-border)]"
+                      >
+                        <Edit2 size={16} />
+                      </Link>
+                      <button 
+                        onClick={() => handleDelete(product._id)}
+                        className="p-2 text-[var(--color-admin-text-muted)] hover:text-red-400 bg-[var(--color-admin-bg)] rounded-lg transition-colors border border-transparent hover:border-red-400/30"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {products.length === 0 && (
           <div className="p-12 text-center text-[var(--color-admin-text-muted)]">
             <Archive size={32} className="mx-auto mb-4 opacity-50" />

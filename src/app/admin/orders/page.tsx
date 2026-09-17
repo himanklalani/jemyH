@@ -148,49 +148,51 @@ export default function AdminOrdersPage() {
 
       {/* Data Table */}
       <div className="bg-[var(--color-admin-surface)] rounded-xl border border-[var(--color-admin-border)] overflow-hidden">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-[var(--color-admin-bg)] border-b border-[var(--color-admin-border)]">
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Order ID & Date</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Customer</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Amount</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Status</th>
-              <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider text-right">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order._id} className="border-b border-[var(--color-admin-border)] last:border-0 hover:bg-[var(--color-admin-surface-hover)] transition-colors group cursor-pointer" onClick={() => setSelectedOrder(order)}>
-                <td className="p-4">
-                  <p className="font-medium text-[var(--color-admin-text)] font-mono text-sm group-hover:text-[var(--color-gold-primary)] transition-colors">{order._id.slice(-8).toUpperCase()}</p>
-                  <p className="text-xs text-[var(--color-admin-text-muted)] mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
-                </td>
-                <td className="p-4">
-                  <p className="text-sm text-[var(--color-admin-text)]">{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
-                  <p className="text-xs text-[var(--color-admin-text-muted)]">{order.region}</p>
-                </td>
-                <td className="p-4">
-                  <p className="text-sm font-medium text-[var(--color-admin-text)]">
-                    {order.region === 'US' ? '$' : '₹'}{order.totalPrice.toLocaleString()}
-                  </p>
-                  <p className="text-xs text-[var(--color-admin-text-muted)] uppercase">{order.paymentMethod}</p>
-                </td>
-                <td className="p-4">
-                  <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold
-                    ${order.orderStatus === 'pending' ? 'bg-orange-400/10 text-orange-400' : 
-                      order.orderStatus === 'shipped' ? 'bg-[var(--color-admin-accent)]/10 text-[var(--color-admin-accent)]' :
-                      order.orderStatus === 'refunded' ? 'bg-red-400/10 text-red-400' :
-                      'bg-green-400/10 text-green-400'}`}>
-                    {order.orderStatus}
-                  </span>
-                </td>
-                <td className="p-4 text-right">
-                  <button className="text-xs font-semibold text-[var(--color-gold-primary)] uppercase tracking-wider hover:underline">Manage</button>
-                </td>
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left border-collapse min-w-[800px]">
+            <thead>
+              <tr className="bg-[var(--color-admin-bg)] border-b border-[var(--color-admin-border)]">
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Order ID & Date</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Customer</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Amount</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider">Status</th>
+                <th className="p-4 font-semibold text-xs text-[var(--color-admin-text-muted)] uppercase tracking-wider text-right">Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.map((order) => (
+                <tr key={order._id} className="border-b border-[var(--color-admin-border)] last:border-0 hover:bg-[var(--color-admin-surface-hover)] transition-colors group cursor-pointer" onClick={() => setSelectedOrder(order)}>
+                  <td className="p-4">
+                    <p className="font-medium text-[var(--color-admin-text)] font-mono text-sm group-hover:text-[var(--color-gold-primary)] transition-colors">{order._id.slice(-8).toUpperCase()}</p>
+                    <p className="text-xs text-[var(--color-admin-text-muted)] mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  </td>
+                  <td className="p-4">
+                    <p className="text-sm text-[var(--color-admin-text)]">{order.shippingAddress?.firstName} {order.shippingAddress?.lastName}</p>
+                    <p className="text-xs text-[var(--color-admin-text-muted)]">{order.region}</p>
+                  </td>
+                  <td className="p-4">
+                    <p className="text-sm font-medium text-[var(--color-admin-text)]">
+                      {order.region === 'US' ? '$' : '₹'}{order.totalPrice.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-[var(--color-admin-text-muted)] uppercase">{order.paymentMethod}</p>
+                  </td>
+                  <td className="p-4">
+                    <span className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-bold
+                      ${order.orderStatus === 'pending' ? 'bg-orange-400/10 text-orange-400' : 
+                        order.orderStatus === 'shipped' ? 'bg-[var(--color-admin-accent)]/10 text-[var(--color-admin-accent)]' :
+                        order.orderStatus === 'refunded' ? 'bg-red-400/10 text-red-400' :
+                        'bg-green-400/10 text-green-400'}`}>
+                      {order.orderStatus}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <button className="text-xs font-semibold text-[var(--color-gold-primary)] uppercase tracking-wider hover:underline">Manage</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {orders.length === 0 && (
           <div className="p-12 text-center text-[var(--color-admin-text-muted)]">
             <PackageOpen size={32} className="mx-auto mb-4 opacity-50" />
