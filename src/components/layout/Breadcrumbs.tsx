@@ -24,7 +24,7 @@ export default function Breadcrumbs() {
   };
 
   return (
-    <div className="absolute top-[68px] md:fixed md:top-7 left-4 md:left-32 lg:left-40 z-40 flex items-center gap-2 md:gap-3 px-3 py-1.5 md:py-1 rounded-full bg-white/60 md:bg-white/30 backdrop-blur-md border border-black/5 shadow-sm text-indigo-950 pointer-events-auto max-w-[calc(100vw-2rem)] md:max-w-none">
+    <div className="absolute top-[80px] md:fixed md:top-7 left-4 md:left-32 lg:left-40 z-40 flex items-center gap-2 md:gap-3 px-3 py-1.5 md:py-1 rounded-full bg-white/60 md:bg-white/30 backdrop-blur-md border border-black/5 shadow-sm text-indigo-950 pointer-events-auto max-w-[calc(100vw-2rem)] md:max-w-none">
       <button 
         onClick={() => router.back()}
         className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest hover:text-gold-primary transition-colors border-r border-indigo-950/20 pr-2 md:pr-3 py-1 shrink-0"

@@ -80,7 +80,7 @@ export default function ProductDetailsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#EAEBE6] pt-[68px]">
+      <div className="min-h-screen flex items-center justify-center bg-[#EAEBE6] pt-[72px]">
         <Loader2 size={32} className="animate-spin text-gold-primary" />
       </div>
     );
@@ -149,8 +149,14 @@ export default function ProductDetailsPage() {
         productName={product.name}
       />
 
-      <div className="min-h-screen bg-[#EAEBE6] pt-[68px]">
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 py-6 md:py-10">
+      <div className="min-h-screen bg-[#EAEBE6] pt-[72px]">
+        {/* Mobile Frosted Top Veil behind fixed navbar when scrolling on phones */}
+        <div 
+          className="md:hidden fixed top-0 left-0 right-0 h-[72px] bg-[#EAEBE6]/92 backdrop-blur-xl z-20 pointer-events-none border-b border-indigo-900/5" 
+          aria-hidden="true" 
+        />
+
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-14 md:pt-10 pb-6 md:pb-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
             {/* ─── Left: Image Stack ─── */}
