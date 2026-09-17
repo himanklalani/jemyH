@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { X, Check, Filter } from 'lucide-react';
+import { X, Check, Filter, SlidersHorizontal } from 'lucide-react';
 
 const FILTER_CONFIG = [
   {
@@ -46,7 +46,11 @@ const FILTER_CONFIG = [
   }
 ];
 
-export default function CatalogFilters() {
+interface CatalogFiltersProps {
+  variant?: 'default' | 'bar';
+}
+
+export default function CatalogFilters({ variant = 'default' }: CatalogFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
@@ -122,20 +126,35 @@ export default function CatalogFilters() {
 
   return (
     <>
-      {/* Inline Filter Button (Mobile & Desktop) */}
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="relative px-4 sm:px-6 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase transition-all duration-300 bg-indigo-900 text-white hover:bg-gold-primary hover:text-indigo-950 flex items-center gap-2 sm:gap-3 border border-indigo-900/10 shadow-sm active:scale-95 shrink-0"
-        aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} applied` : ''}`}
-      >
-        <Filter size={13} className="shrink-0" />
-        <span>Filters</span>
-        {activeFilterCount > 0 && (
-          <span className="flex items-center justify-center min-w-[18px] h-4.5 px-1 bg-gold-primary text-indigo-950 font-bold rounded-full text-[9px] shadow-sm">
-            {activeFilterCount}
-          </span>
-        )}
-      </button>
+      {variant === 'bar' ? (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="w-full h-full flex items-center justify-center gap-2 px-3 text-[11px] font-bold tracking-[0.14em] uppercase text-indigo-900 active:bg-indigo-900/5 transition-colors cursor-pointer select-none"
+          aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} applied` : ''}`}
+        >
+          <SlidersHorizontal size={13} className="text-indigo-900/60 shrink-0" />
+          <span>Filters</span>
+          {activeFilterCount > 0 && (
+            <span className="flex items-center justify-center min-w-[18px] h-4.5 px-1.5 bg-gold-primary text-indigo-950 font-bold rounded-full text-[9px] shadow-sm">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+      ) : (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className="relative px-4 sm:px-6 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase transition-all duration-300 bg-indigo-900 text-white hover:bg-gold-primary hover:text-indigo-950 flex items-center gap-2 sm:gap-3 border border-indigo-900/10 shadow-sm active:scale-95 shrink-0"
+          aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} applied` : ''}`}
+        >
+          <Filter size={13} className="shrink-0" />
+          <span>Filters</span>
+          {activeFilterCount > 0 && (
+            <span className="flex items-center justify-center min-w-[18px] h-4.5 px-1 bg-gold-primary text-indigo-950 font-bold rounded-full text-[9px] shadow-sm">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+      )}
 
       {mounted && typeof document !== 'undefined' && createPortal(
         <AnimatePresence>

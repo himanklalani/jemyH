@@ -306,6 +306,12 @@ export default function ProductsCatalogPage() {
   return (
     <div className="w-full min-h-screen bg-[#EAEBE6] pt-[68px]">
 
+      {/* Mobile Frosted Top Veil behind fixed navbar when scrolling on phones */}
+      <div 
+        className="md:hidden fixed top-0 left-0 right-0 h-[60px] bg-[#EAEBE6]/92 backdrop-blur-xl z-20 pointer-events-none border-b border-indigo-900/5" 
+        aria-hidden="true" 
+      />
+
       {/* Page Header */}
       <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-16 pb-6">
         <motion.div
@@ -321,10 +327,10 @@ export default function ProductsCatalogPage() {
             >
               All Frames
             </h1>
-            <div className="flex items-center gap-2.5 sm:gap-4 md:gap-6">
+            <div className="hidden md:flex items-center gap-6">
               <Link
                 href="/products?category=sunglasses"
-                className="hidden md:inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-900/50 hover:text-gold-primary transition-colors border-b border-indigo-900/20 pb-0.5 hover:border-gold-primary"
+                className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-900/50 hover:text-gold-primary transition-colors border-b border-indigo-900/20 pb-0.5 hover:border-gold-primary"
               >
                 Sunglasses Only <ArrowRight size={12} />
               </Link>
@@ -340,6 +346,28 @@ export default function ProductsCatalogPage() {
             <QuickFilterBar />
           </Suspense>
         </motion.div>
+      </div>
+
+      {/* ── Mobile Sticky Sort & Filter Bar (concept: stuck to top when scrolled on phones) ── */}
+      <div className="md:hidden sticky top-[60px] z-30 w-full bg-[#EAEBE6]/95 backdrop-blur-xl border-y border-indigo-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+        <div className="flex items-center h-11 px-3">
+          {/* Left Half: Sort */}
+          <div className="flex-1 h-full flex items-center justify-center">
+            <Suspense fallback={<div className="h-4 w-12 bg-indigo-900/5 rounded animate-pulse" />}>
+              <CatalogSort variant="bar" />
+            </Suspense>
+          </div>
+
+          {/* Center Hairline Divider */}
+          <div className="w-px h-5 bg-indigo-900/15 shrink-0" aria-hidden="true" />
+
+          {/* Right Half: Filter */}
+          <div className="flex-1 h-full flex items-center justify-center">
+            <Suspense fallback={<div className="h-4 w-12 bg-indigo-900/5 rounded animate-pulse" />}>
+              <CatalogFilters variant="bar" />
+            </Suspense>
+          </div>
+        </div>
       </div>
 
       <Suspense fallback={<div className="h-64 flex items-center justify-center"><div className="w-8 h-8 border-2 border-indigo-900/20 border-t-gold-primary rounded-full animate-spin" /></div>}>
