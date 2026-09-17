@@ -128,8 +128,8 @@ export default function Navbar() {
 
       {/* ─── PILL - always rendered, fades with isOpen ─── */}
       <motion.div
-        animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
-        transition={{ duration: 0.22, ease: 'easeOut' }}
+        animate={{ opacity: isOpen ? 0 : 1, scale: isOpen ? 0.95 : 1, y: isOpen ? -4 : 0 }}
+        transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
         className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 flex items-center bg-white/90 backdrop-blur-md pl-1 md:pl-1.5 pr-1 md:pr-1.5 py-1 md:py-1.5 rounded-full shadow-lg border border-black/5 gap-0.5 md:gap-1"
       >
@@ -228,7 +228,7 @@ export default function Navbar() {
           onClick={() => setIsOpen(true)}
           aria-expanded={isOpen}
           aria-haspopup="dialog"
-          className="group flex items-center gap-1.5 md:gap-2.5 px-3 md:px-5 h-8 md:h-10 rounded-full bg-indigo-950 text-white transition-all duration-300 hover:bg-gold-primary hover:text-indigo-950"
+          className="group flex items-center gap-1.5 md:gap-2.5 px-3 md:px-5 h-8 md:h-10 rounded-full bg-indigo-950 text-white transition-all duration-300 hover:bg-gold-primary hover:text-indigo-950 active:scale-95 cursor-pointer"
           aria-label="Open navigation menu"
         >
           <div className="flex flex-col gap-[3.5px] md:gap-[4.5px] w-3.5 md:w-4" aria-hidden="true">
@@ -300,18 +300,19 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.28, ease: 'easeOut' }}
+              transition={{ duration: 0.32, ease: 'easeOut' }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             />
 
-            {/* Panel */}
+            {/* Panel - expands smoothly from Menu button location (top-right) */}
             <motion.div
               key="panel"
-              initial={{ opacity: 0, y: -8, scale: 0.985 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.985 }}
-              transition={{ duration: 0.32, ease }}
+              initial={{ opacity: 0, scale: 0.88, y: -10, filter: 'blur(8px)' }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, scale: 0.9, y: -6, filter: 'blur(6px)' }}
+              transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+              style={{ transformOrigin: 'top right' }}
               className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 w-[calc(100vw-28px)] max-w-[345px] sm:max-w-[380px] md:w-[90vw] md:max-w-[700px] max-h-[85vh] bg-[#0c0c0c] rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.7)] overflow-hidden border border-white/[0.08] flex flex-col"
               role="dialog"
               aria-modal="true"
@@ -324,11 +325,12 @@ export default function Navbar() {
                   <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Jemy&#x2122;</span>
                   <motion.button
                     ref={menuCloseRef}
-                    initial={{ opacity: 0, rotate: -45 }}
-                    animate={{ opacity: 1, rotate: 0 }}
-                    transition={{ delay: 0.15, duration: 0.35, ease }}
+                    initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
+                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                    exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
+                    transition={{ delay: 0.1, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                     onClick={() => { setIsOpen(false); menuTriggerRef.current?.focus(); }}
-                    className="w-8 h-8 flex items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                    className="w-8 h-8 flex items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 active:scale-90 transition-all"
                     aria-label="Close menu"
                   >
                     <X size={17} className="md:w-[18px] md:h-[18px]" strokeWidth={1.5} />
@@ -344,10 +346,10 @@ export default function Navbar() {
                     {MENU_LINKS.map((link, i) => (
                       <motion.div
                         key={link.label}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ delay: 0.05 + i * 0.03, duration: 0.35, ease }}
+                        initial={{ opacity: 0, x: 12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 8 }}
+                        transition={{ delay: 0.05 + i * 0.035, duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <Link
                           href={link.href}

@@ -142,28 +142,30 @@ export default function ScrubbableProductCard({ product, mockImages, aspectClass
         </div>
       </Link>
 
-      {/* Wishlist button: sibling to Link, NOT nested inside it (valid HTML + screen reader fix) */}
-      <div
-        className="absolute top-4 right-4 z-30 transition-all duration-500"
-        style={{ opacity: isHovered ? 1 : 0, transform: isHovered ? 'translateY(0)' : 'translateY(-10px)', pointerEvents: isHovered ? 'auto' : 'none' }}
-      >
+      {/* Small Wishlist Heart Button ON THE IMAGE (always accessible on mobile, hover on desktop) */}
+      <div className="absolute top-2.5 right-2.5 md:top-3.5 md:right-3.5 z-30 transition-all duration-300 opacity-100 md:opacity-0 md:group-hover:opacity-100">
         <button
-          className="w-10 h-10 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center text-black hover:bg-white hover:text-red-500 transition-colors shadow-sm"
+          className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-black/35 md:bg-white/60 backdrop-blur-md flex items-center justify-center text-white md:text-black hover:text-red-500 hover:bg-white active:scale-90 transition-all shadow-sm cursor-pointer"
           onClick={handleWishlist}
           aria-label={`Add ${product.name} to wishlist`}
         >
-          <Heart size={18} />
+          <Heart size={13} className="md:w-4 md:h-4 transition-colors" />
         </button>
       </div>
 
-      <div className="flex flex-col items-start px-1 mt-2 gap-0.5">
-        <div className="flex justify-between w-full items-start gap-1">
-          <h3 className="font-display font-bold text-[13px] md:text-lg leading-[1.1] text-[var(--theme-text)] group-hover:text-gold-primary transition-colors line-clamp-2 pr-1">{product.name}</h3>
-          <span className="text-[11px] md:text-sm font-semibold text-[var(--theme-text)] font-mono tabular-nums shrink-0 pt-[2px]" style={{ fontVariantNumeric: 'tabular-nums' }}>
+      {/* Info: On mobile, ONLY show money (price). Frame name and category are hidden on mobile, visible on desktop */}
+      <div className="flex flex-col items-start px-1 mt-1.5 md:mt-2 gap-0.5">
+        <div className="flex justify-between w-full items-center md:items-start gap-1">
+          <h3 className="hidden md:block font-display font-bold text-lg leading-[1.1] text-[var(--theme-text)] group-hover:text-gold-primary transition-colors line-clamp-2 pr-1">
+            {product.name}
+          </h3>
+          <span className="text-[12px] md:text-sm font-semibold text-[var(--theme-text)] font-mono tabular-nums shrink-0 pt-0.5 md:pt-[2px]" style={{ fontVariantNumeric: 'tabular-nums' }}>
             {product.pricing?.US ? `$${product.pricing.US.amount}` : product.pricing?.IN ? `₹${product.pricing.IN.amount}` : '-'}
           </span>
         </div>
-        <p className="text-[9px] md:text-[11px] uppercase tracking-widest text-[var(--theme-text)]/50 capitalize font-mono mt-1">{product.category}</p>
+        <p className="hidden md:block text-[11px] uppercase tracking-widest text-[var(--theme-text)]/50 capitalize font-mono mt-1">
+          {product.category}
+        </p>
       </div>
     </div>
   );

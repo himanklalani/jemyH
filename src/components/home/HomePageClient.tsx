@@ -299,96 +299,109 @@ function HeroSection({ onQuizOpen, banners }: { onQuizOpen: () => void, banners?
   );
 }
 
-function FeaturedCollection({ title, products, link = '/products' }: { title: string, products: Product[], link?: string }) {
+function FeaturedCollection({ 
+  title, 
+  products, 
+  link = '/products',
+  limit = 8 
+}: { 
+  title: string; 
+  products: Product[]; 
+  link?: string;
+  limit?: number;
+}) {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     const cards = container.current?.querySelectorAll('.product-card');
     if (!cards?.length) return;
     gsap.fromTo(cards,
-      { opacity: 0, y: 80, filter: 'blur(8px)' },
+      { opacity: 0, y: 60, filter: 'blur(8px)' },
       {
         opacity: 1, y: 0, filter: 'blur(0px)',
-        stagger: 0.12, duration: 1, ease: 'expo.out',
+        stagger: 0.08, duration: 0.9, ease: 'expo.out',
         scrollTrigger: { trigger: container.current, start: 'top 80%', toggleActions: 'play none none none' },
       }
     );
-  }, { scope: container });
+  }, { scope: container, dependencies: [products] });
+
+  const displayProducts = products.length > 0
+    ? (limit ? products.slice(0, limit) : products)
+    : [
+        {
+          _id: 'mock-1',
+          name: 'Editorial Acetate',
+          category: 'Optical',
+          pricing: { US: { amount: 345, currency: 'USD' }, IN: { amount: 28500, currency: 'INR' } },
+          images: [
+            '/images/glasses_studio_1787493089248.png',
+            '/images/glasses_lifestyle_1_1787493103772.png',
+            '/images/glasses_macro_1787493118137.png',
+            '/images/glasses_lifestyle_2_1787493132668.png'
+          ]
+        },
+        {
+          _id: 'mock-2',
+          name: 'Titanium Wireframe',
+          category: 'Optical',
+          pricing: { US: { amount: 420, currency: 'USD' }, IN: { amount: 34500, currency: 'INR' } },
+          images: [
+            '/images/glasses_studio_stack_2_1787493171644.png',
+            '/images/titanium_lifestyle_1_1787494228901.png',
+            '/images/titanium_macro_1787494244263.png',
+            '/images/titanium_lifestyle_2_1787494257550.png'
+          ]
+        },
+        {
+          _id: 'mock-3',
+          name: 'Geometric Sun',
+          category: 'Sunglasses',
+          pricing: { US: { amount: 285, currency: 'USD' }, IN: { amount: 23500, currency: 'INR' } },
+          images: [
+            '/images/glasses_studio_stack_3_1787493184622.png',
+            '/images/sun_lifestyle_1_1787494277969.png',
+            '/images/sun_macro_1787494291484.png'
+          ]
+        },
+        {
+          _id: 'mock-4',
+          name: 'Clear Acetate',
+          category: 'Optical',
+          pricing: { US: { amount: 310, currency: 'USD' }, IN: { amount: 25500, currency: 'INR' } },
+          images: [
+            '/images/glasses_studio_stack_4_1787493197525.png',
+            '/images/glasses_lifestyle_1_1787493103772.png',
+            '/images/macro_detail.png',
+            '/images/glasses_lifestyle_2_1787493132668.png'
+          ]
+        }
+      ];
 
   return (
     <section className="py-12 md:py-24">
       <div ref={container} className="max-w-[1600px] mx-auto px-6 lg:px-12">
-        <div className="flex items-end justify-between mb-10 md:mb-16">
+        <div className="flex items-end justify-between mb-8 md:mb-16">
           <SectionHeading label="" title={title} />
           <Link
             href={link}
-            className="hidden md:inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--theme-text)]/50 hover:text-gold-primary transition-colors border-b border-[var(--theme-text)]/20 hover:border-gold-primary pb-1"
+            className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--theme-text)]/50 hover:text-gold-primary transition-colors border-b border-[var(--theme-text)]/20 hover:border-gold-primary pb-1"
           >
             Explore All <ArrowRight size={13} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 lg:gap-10">
-          {(products.length > 0 ? products.slice(0, 4) : [
-            {
-              _id: 'mock-1',
-              name: 'Editorial Acetate',
-              category: 'Optical',
-              pricing: { US: { amount: 345, currency: 'USD' }, IN: { amount: 28500, currency: 'INR' } },
-              images: [
-                '/images/glasses_studio_1787493089248.png',
-                '/images/glasses_lifestyle_1_1787493103772.png',
-                '/images/glasses_macro_1787493118137.png',
-                '/images/glasses_lifestyle_2_1787493132668.png'
-              ]
-            },
-            {
-              _id: 'mock-2',
-              name: 'Titanium Wireframe',
-              category: 'Optical',
-              pricing: { US: { amount: 420, currency: 'USD' }, IN: { amount: 34500, currency: 'INR' } },
-              images: [
-                '/images/glasses_studio_stack_2_1787493171644.png',
-                '/images/titanium_lifestyle_1_1787494228901.png',
-                '/images/titanium_macro_1787494244263.png',
-                '/images/titanium_lifestyle_2_1787494257550.png'
-              ]
-            },
-            {
-              _id: 'mock-3',
-              name: 'Geometric Sun',
-              category: 'Sunglasses',
-              pricing: { US: { amount: 285, currency: 'USD' }, IN: { amount: 23500, currency: 'INR' } },
-              images: [
-                '/images/glasses_studio_stack_3_1787493184622.png',
-                '/images/sun_lifestyle_1_1787494277969.png',
-                '/images/sun_macro_1787494291484.png'
-              ]
-            },
-            {
-              _id: 'mock-4',
-              name: 'Clear Acetate',
-              category: 'Optical',
-              pricing: { US: { amount: 310, currency: 'USD' }, IN: { amount: 25500, currency: 'INR' } },
-              images: [
-                '/images/glasses_studio_stack_4_1787493197525.png',
-                '/images/glasses_lifestyle_1_1787493103772.png',
-                '/images/macro_detail.png',
-                '/images/glasses_lifestyle_2_1787493132668.png'
-              ]
-            }
-          ]).map((product: any, idx: number) => {
-            const isWideMobile = idx >= 2;
-            return (
-              <div key={product._id} className={`${isWideMobile ? 'col-span-2 md:col-span-1' : 'col-span-1'} w-full`}>
-                <ScrubbableProductCard 
-                  product={product} 
-                  mockImages={product.images} 
-                  aspectClass={isWideMobile ? 'aspect-[4/3] md:aspect-[3/4]' : 'aspect-square md:aspect-[3/4]'}
-                />
-              </div>
-            );
-          })}
+        {/* Mobile: Horizontally queued & scrollable carousel track with snap
+            Desktop: Standard 4-column grid */}
+        <div className="flex overflow-x-auto md:grid md:grid-cols-4 gap-4 md:gap-6 lg:gap-10 snap-x snap-mandatory md:snap-none scrollbar-none pb-4 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 overscroll-x-contain">
+          {displayProducts.map((product: any) => (
+            <div key={product._id} className="w-[64vw] sm:w-[260px] md:w-full shrink-0 md:shrink snap-start md:snap-align-none">
+              <ScrubbableProductCard 
+                product={product} 
+                mockImages={product.images} 
+                aspectClass="aspect-square md:aspect-[3/4]"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>
