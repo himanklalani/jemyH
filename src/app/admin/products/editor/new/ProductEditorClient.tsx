@@ -212,23 +212,23 @@ export default function ProductEditorClient({ productId }: { productId: string }
   if (loading) return <div className="p-8 text-[var(--color-admin-text-muted)] flex items-center gap-3"><Loader2 className="animate-spin" /> Loading product data...</div>;
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700 pb-32">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700 pb-32">
       
       {/* Header */}
-      <div className="flex justify-between items-center bg-[var(--color-admin-surface)] p-6 rounded-2xl border border-[var(--color-admin-border)] sticky top-24 z-10 backdrop-blur-xl">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-[var(--color-admin-surface)] p-4 md:p-6 rounded-2xl border border-[var(--color-admin-border)] sticky top-20 md:top-24 z-10 backdrop-blur-xl">
+        <div className="flex items-center gap-3 md:gap-4">
           <Link href="/admin/products" className="p-2 bg-[var(--color-admin-bg)] rounded-lg text-[var(--color-admin-text-muted)] hover:text-[var(--color-admin-text)] transition-colors">
             <ArrowLeft size={20} />
           </Link>
-          <div>
-            <h1 className="text-2xl font-serif text-[var(--color-gold-primary)]">{isNew ? 'Create New Product' : 'Edit Product'}</h1>
-            <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide">Optical precision required.</p>
+          <div className="min-w-0">
+            <h1 className="text-xl md:text-2xl font-serif text-[var(--color-gold-primary)] truncate">{isNew ? 'Create New Product' : 'Edit Product'}</h1>
+            <p className="text-[var(--color-admin-text-muted)] text-xs md:text-sm tracking-wide hidden sm:block">Optical precision required.</p>
           </div>
         </div>
         <button 
           onClick={handleSubmit}
           disabled={saving}
-          className="flex items-center gap-2 bg-[var(--color-gold-primary)] text-[var(--color-indigo-950)] px-6 py-3 rounded-lg font-bold tracking-wide hover:scale-105 transition-transform disabled:opacity-50"
+          className="flex items-center gap-2 bg-[var(--color-gold-primary)] text-[var(--color-indigo-950)] px-4 md:px-6 py-2.5 md:py-3 rounded-lg font-bold tracking-wide hover:scale-105 transition-transform disabled:opacity-50 text-sm shrink-0"
         >
           {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
           <span>{isNew ? 'PUBLISH CATALOG' : 'SAVE CHANGES'}</span>
@@ -238,10 +238,10 @@ export default function ProductEditorClient({ productId }: { productId: string }
       <form className="space-y-8" onSubmit={handleSubmit}>
         
         {/* Core Details */}
-        <div className="bg-[var(--color-admin-surface)] p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
+        <div className="bg-[var(--color-admin-surface)] p-4 md:p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
           <h2 className="text-sm font-bold text-[var(--color-admin-text-muted)] uppercase tracking-wider border-b border-[var(--color-admin-border)] pb-4">Core Identification</h2>
           
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Name <span className="text-red-500 ml-1">*</span></label>
               <input 
@@ -273,7 +273,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">SKU / Internal Code</label>
               <input type="text" value={formData.sku || ''} onChange={e => setFormData({...formData, sku: e.target.value})} placeholder="e.g. ACC-CASE-01" className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
@@ -401,9 +401,9 @@ export default function ProductEditorClient({ productId }: { productId: string }
         </div>
 
         {/* Metadata & Discovery */}
-        <div className="bg-[var(--color-admin-surface)] p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
+        <div className="bg-[var(--color-admin-surface)] p-4 md:p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
           <h2 className="text-sm font-bold text-[var(--color-admin-text-muted)] uppercase tracking-wider border-b border-[var(--color-admin-border)] pb-4">Metadata & Discovery</h2>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Tags (comma separated)</label>
               <input 
@@ -424,7 +424,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
                 className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" 
               />
             </div>
-            <div className="space-y-2 col-span-2">
+            <div className="space-y-2 sm:col-span-2">
               <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Images (comma separated URLs)</label>
               <textarea 
                 rows={3}
@@ -438,9 +438,9 @@ export default function ProductEditorClient({ productId }: { productId: string }
         </div>
 
         {/* Pricing */}
-        <div className="bg-[var(--color-admin-surface)] p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
+        <div className="bg-[var(--color-admin-surface)] p-4 md:p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
           <h2 className="text-sm font-bold text-[var(--color-admin-text-muted)] uppercase tracking-wider border-b border-[var(--color-admin-border)] pb-4">Dual-Region Pricing</h2>
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {(formData.regionAvailability === 'BOTH' || formData.regionAvailability === 'US') && (
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">USA Price (USD) <span className="text-red-500 ml-1">*</span></label>
@@ -458,12 +458,12 @@ export default function ProductEditorClient({ productId }: { productId: string }
 
         {/* Optical Specific (Only for Glasses) */}
         {(formData.category === 'eyeglasses' || formData.category === 'sunglasses') && (
-          <div className="bg-[var(--color-admin-surface)] p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
+          <div className="bg-[var(--color-admin-surface)] p-4 md:p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
             <h2 className="text-sm font-bold text-[var(--color-admin-text-muted)] uppercase tracking-wider border-b border-[var(--color-admin-border)] pb-4 flex items-center gap-2">
               <Info size={16} className="text-[var(--color-gold-primary)]" /> Technical Optical Specifications
             </h2>
             
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Frame Shape</label>
                 <select value={formData.frameShape} onChange={e => setFormData({...formData, frameShape: e.target.value})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]">
@@ -481,7 +481,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Frame Color</label>
                 <input
@@ -503,7 +503,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 pt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4">
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Lens Width (mm)</label>
                 <input type="number" value={formData.frameMeasurements?.lensWidth} onChange={e => setFormData({...formData, frameMeasurements: { ...formData.frameMeasurements, lensWidth: parseInt(e.target.value) }})} className="w-full bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] rounded-lg px-4 py-3 text-[var(--color-admin-text)] outline-none focus:border-[var(--color-gold-primary)]" />
@@ -526,7 +526,7 @@ export default function ProductEditorClient({ productId }: { productId: string }
         )}
 
         {/* Color Variants & Color-Specific Images */}
-        <div className="bg-[var(--color-admin-surface)] p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
+        <div className="bg-[var(--color-admin-surface)] p-4 md:p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--color-admin-border)] pb-4">
             <div>
               <h2 className="text-sm font-bold text-[var(--color-admin-text-muted)] uppercase tracking-wider flex items-center gap-2">
@@ -696,12 +696,12 @@ export default function ProductEditorClient({ productId }: { productId: string }
 
         {/* Accessory Specific (Cases, Chains, Cloths, Kits, Add-ons) */}
         {(formData.category === 'accessories' || formData.category === 'addon') && (
-          <div className="bg-[var(--color-admin-surface)] p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
+          <div className="bg-[var(--color-admin-surface)] p-4 md:p-8 rounded-2xl border border-[var(--color-admin-border)] space-y-6">
             <h2 className="text-sm font-bold text-[var(--color-admin-text-muted)] uppercase tracking-wider border-b border-[var(--color-admin-border)] pb-4 flex items-center gap-2">
               <Info size={16} className="text-[var(--color-gold-primary)]" /> Accessory Details & Specifications
             </h2>
             
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="block text-xs font-semibold text-[var(--color-admin-text)] uppercase">Accessory Type</label>
                 <input 
