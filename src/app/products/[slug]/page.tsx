@@ -16,6 +16,7 @@ import ProductTypeSelector, { ProductType } from '@/components/product/ProductTy
 import ProductHighlightsTabs from '@/components/product/ProductHighlightsTabs';
 import InspirationLooks from '@/components/product/InspirationLooks';
 import ProductReviews from '@/components/product/ProductReviews';
+import Breadcrumbs from '@/components/layout/Breadcrumbs';
 import Link from 'next/link';
 
 export default function ProductDetailsPage() {
@@ -204,7 +205,12 @@ export default function ProductDetailsPage() {
           aria-hidden="true" 
         />
 
-        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-14 md:pt-10 pb-6 md:pb-10">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-12 pt-4 md:pt-6 pb-6 md:pb-10">
+          {/* ─── Breadcrumbs Navigation ─── */}
+          <div className="mb-5 md:mb-6">
+            <Breadcrumbs customName={product.name} />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
 
             {/* ─── Left: Image Stack ─── */}

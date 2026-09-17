@@ -5,7 +5,6 @@ import "./globals.css";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import Breadcrumbs from "@/components/layout/Breadcrumbs";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SmoothScrollProvider from "@/providers/SmoothScrollProvider";
 import QueryProvider from "@/providers/QueryProvider";
@@ -68,7 +67,6 @@ export default function RootLayout({
             </a>
             <Preloader />
             <Navbar />
-            <Breadcrumbs />
             <CartDrawer />
             <main id="main-content" tabIndex={-1} className="flex-1">
               {children}
