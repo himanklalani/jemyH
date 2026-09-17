@@ -15,7 +15,7 @@ export function getProductJsonLd(product: any, region: 'US' | 'IN') {
     },
     offers: {
       '@type': 'Offer',
-      url: `${baseUrl}/shop/${product.category}/${product.slug}`,
+      url: `${baseUrl}/products/${product.slug}`,
       priceCurrency: region === 'US' ? 'USD' : 'INR',
       price: priceObj?.amount || 0,
       availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',

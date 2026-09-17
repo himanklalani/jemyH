@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const products = await Product.find({ stock: { $gt: 0 } }).select('slug category updatedAt').lean();
   
   // Static Routes
-  const staticRoutes = ['', '/about', '/contact', '/shop/sunglasses', '/shop/eyeglasses', '/shop/perfume'].map((route) => ({
+  const staticRoutes = ['', '/products', '/products?category=sunglasses', '/products?category=eyeglasses', '/editorial', '/contact'].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
@@ -28,15 +28,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic Product Routes
   const productRoutes = products.map((product: any) => ({
-    url: `${baseUrl}/shop/${product.category}/${product.slug}`,
+    url: `${baseUrl}/products/${product.slug}`,
     lastModified: product.updatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.9,
     alternates: {
       languages: {
-        'en-US': `${baseUrl}/shop/${product.category}/${product.slug}`,
-        'en-IN': `${baseUrl}/shop/${product.category}/${product.slug}`,
-        'x-default': `${baseUrl}/shop/${product.category}/${product.slug}`,
+        'en-US': `${baseUrl}/products/${product.slug}`,
+        'en-IN': `${baseUrl}/products/${product.slug}`,
+        'x-default': `${baseUrl}/products/${product.slug}`,
       },
     },
   }));
