@@ -121,7 +121,7 @@ export default function Navbar() {
         animate={{ opacity: isOpen ? 0 : 1, y: isOpen ? -6 : 0 }}
         transition={{ duration: 0.22, ease: 'easeOut' }}
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
-        className="fixed top-4 md:top-7 left-4 md:left-8 z-50 mix-blend-difference block"
+        className="fixed top-[22px] md:top-7 left-4 md:left-8 z-50 mix-blend-difference block"
       >
         <Link href="/">
           <span className="font-display font-bold text-xl tracking-widest text-white uppercase hover:text-gold-primary transition-colors">Jemy</span>
@@ -133,7 +133,7 @@ export default function Navbar() {
         animate={{ opacity: isOpen ? 0 : 1, scale: isOpen ? 0.95 : 1, y: isOpen ? -4 : 0 }}
         transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
-        className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 flex items-center bg-white/95 backdrop-blur-xl px-1.5 md:px-2 py-1.5 md:py-2 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-black/8 gap-1 md:gap-1.5"
+        className="fixed top-3 md:top-6 right-3.5 md:right-6 z-50 flex items-center bg-white/95 backdrop-blur-xl px-1.5 md:px-2 py-1.5 md:py-2 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-black/8 gap-1 md:gap-1.5"
       >
         {/* Desktop Sunglasses & Optical collection links (hidden during hero, expands in when scrolled) */}
         <AnimatePresence>
@@ -315,7 +315,7 @@ export default function Navbar() {
               exit={{ opacity: 0, scale: 0.9, y: -6, filter: 'blur(6px)' }}
               transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
               style={{ transformOrigin: 'top right' }}
-              className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 w-[calc(100vw-28px)] max-w-[345px] sm:max-w-[380px] md:w-[90vw] md:max-w-[700px] max-h-[85vh] bg-[#0c0c0c] rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.7)] overflow-hidden border border-white/[0.08] flex flex-col"
+              className="fixed top-3 md:top-6 right-3.5 md:right-6 z-50 w-[calc(100vw-28px)] max-w-[345px] sm:max-w-[380px] md:w-[90vw] md:max-w-[700px] max-h-[85vh] bg-[#0c0c0c] rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.7)] overflow-hidden border border-white/[0.08] flex flex-col"
               role="dialog"
               aria-modal="true"
               aria-label="Site navigation"

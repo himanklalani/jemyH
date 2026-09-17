@@ -301,11 +301,11 @@ function CatalogGrid() {
 /* ── Page ─────────────────────────────────────────────────────── */
 export default function ProductsCatalogPage() {
   return (
-    <div className="w-full min-h-screen bg-[#EAEBE6] pt-[68px]">
+    <div className="w-full min-h-screen bg-[#EAEBE6] pt-[72px]">
 
       {/* Mobile Frosted Top Veil behind fixed navbar when scrolling on phones */}
       <div 
-        className="md:hidden fixed top-0 left-0 right-0 h-[60px] bg-[#EAEBE6]/92 backdrop-blur-xl z-20 pointer-events-none border-b border-indigo-900/5" 
+        className="md:hidden fixed top-0 left-0 right-0 h-[72px] bg-[#EAEBE6]/92 backdrop-blur-xl z-20 pointer-events-none border-b border-indigo-900/5" 
         aria-hidden="true" 
       />
 
@@ -346,7 +346,7 @@ export default function ProductsCatalogPage() {
       </div>
 
       {/* ── Mobile Sticky Sort & Filter Bar (concept: stuck to top when scrolled on phones) ── */}
-      <div className="md:hidden sticky top-[60px] z-30 w-full bg-[#EAEBE6]/95 backdrop-blur-xl border-y border-indigo-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+      <div className="md:hidden sticky top-[72px] z-30 w-full bg-[#EAEBE6]/95 backdrop-blur-xl border-y border-indigo-900/10 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
         <div className="flex items-center h-11 px-3">
           {/* Left Half: Sort */}
           <div className="flex-1 h-full flex items-center justify-center">
