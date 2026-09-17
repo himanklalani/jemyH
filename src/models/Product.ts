@@ -6,6 +6,13 @@ const PricingSchema = new Schema({
   compareAtAmount: { type: Number }
 }, { _id: false });
 
+export interface IColorVariant {
+  color: string;
+  hex?: string;
+  imageUrl?: string;
+  images?: string[];
+}
+
 export interface IProduct extends Document {
   name: string;
   slug: string;
@@ -29,7 +36,15 @@ export interface IProduct extends Document {
   isPublished: boolean;
   brand: string;
   features: string[];
+  colorVariants?: IColorVariant[];
 }
+
+const ColorVariantSchema = new Schema({
+  color: { type: String, required: true },
+  hex: { type: String },
+  imageUrl: { type: String },
+  images: [{ type: String }],
+}, { _id: false });
 
 const ProductSchema: Schema = new Schema({
   name: { type: String, required: true },
@@ -38,6 +53,7 @@ const ProductSchema: Schema = new Schema({
   category: { type: String, required: true },
   subcategory: { type: String },
   images: [{ type: String }],
+  colorVariants: [ColorVariantSchema],
   pricing: {
     US: PricingSchema,
     IN: PricingSchema

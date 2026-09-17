@@ -9,8 +9,6 @@ export default function Preloader() {
   const [isLoading, setIsLoading] = useState(true);
   const [counter, setCounter] = useState(0);
 
-  if (pathname?.startsWith('/admin')) return null;
-
   // Main preloader timer + counter animation
   useEffect(() => {
     // Disable preloader on admin pages
@@ -56,7 +54,9 @@ export default function Preloader() {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
     };
-  }, []);
+  }, [pathname]);
+
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
     <AnimatePresence>

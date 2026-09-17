@@ -44,7 +44,8 @@ export default function ProductDetailsPage() {
       .then(d => {
         if (d.success) {
           setProduct(d.product);
-          setSelectedColor(d.product.frameColor || 'Black');
+          const initialColor = d.product.colorVariants?.[0]?.color || d.product.frameColor || 'Black';
+          setSelectedColor(initialColor);
           setSelectedSize(d.product.frameSize || 'M');
         } else {
           router.push('/products');
@@ -92,7 +93,6 @@ export default function ProductDetailsPage() {
   const currency       = region === 'US' ? 'USD' : 'INR';
   const formatted      = price ? new Intl.NumberFormat(region === 'US' ? 'en-US' : 'en-IN', { style: 'currency', currency, minimumFractionDigits: 0 }).format(price) : 'Contact for price';
   const compareFormatted = compareAt ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(compareAt) : null;
-  const images         = product.images?.length ? product.images : [null];
 
   const specs = [
     product.frameMaterial  && { label: 'Material',      value: product.frameMaterial },
@@ -125,12 +125,60 @@ export default function ProductDetailsPage() {
     { id: 'L', label: 'Wide Fit' }
   ];
 
-  // Derive some elegant color swatches based on product color
-  const colorSwatches = [
-    { name: product.frameColor || 'Black', hex: product.frameColor?.toLowerCase() === 'tortoiseshell' ? 'linear-gradient(45deg, #4A2E1B, #9E6C3A)' : (product.frameColor?.toLowerCase() === 'silver' || product.frameColor?.toLowerCase() === 'titanium' ? '#C0C0C0' : '#1A1F2C') },
-    { name: 'Onyx Black', hex: '#11131A' },
-    { name: 'Clear Acetate', hex: '#EAEBE6' }
-  ];
+  // Helper for default hex values
+  const getDefaultHex = (colorName: string) => {
+    const c = (colorName || '').toLowerCase();
+    if (c.includes('tortoise')) return 'linear-gradient(45deg, #4A2E1B, #9E6C3A)';
+    if (c.includes('gold')) return '#D4AF37';
+    if (c.includes('silver') || c.includes('titanium')) return '#C0C0C0';
+    if (c.includes('clear') || c.includes('transparent')) return '#EAEBE6';
+    if (c.includes('navy') || c.includes('blue')) return '#1B2A4A';
+    if (c.includes('green') || c.includes('emerald')) return '#2E4A3B';
+    if (c.includes('brown')) return '#5B3A29';
+    if (c.includes('black') || c.includes('onyx')) return '#11131A';
+    return '#1A1F2C';
+  };
+
+  // Derive elegant color swatches from product.colorVariants or fallback
+  const colorSwatches: { name: string; hex: string; imageUrl?: string }[] = (() => {
+    if (Array.isArray(product.colorVariants) && product.colorVariants.length > 0) {
+      return product.colorVariants.map((v: any) => ({
+        name: v.color,
+        hex: v.hex || getDefaultHex(v.color),
+        imageUrl: v.imageUrl || v.image || '',
+      }));
+    }
+    return [
+      { 
+        name: product.frameColor || 'Black', 
+        hex: getDefaultHex(product.frameColor || 'Black'),
+        imageUrl: product.images?.[0] || ''
+      },
+      { 
+        name: 'Onyx Black', 
+        hex: '#11131A',
+        imageUrl: product.images?.[1] || product.images?.[0] || ''
+      },
+      { 
+        name: 'Clear Acetate', 
+        hex: '#EAEBE6',
+        imageUrl: product.images?.[2] || product.images?.[0] || ''
+      }
+    ];
+  })();
+
+  const activeColorSwatch = colorSwatches.find(s => s.name === selectedColor) || colorSwatches[0];
+
+  // Dynamic gallery images: prioritize active color's specific image
+  const displayedImages: (string | null)[] = (() => {
+    const rawImages: string[] = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
+    if (activeColorSwatch?.imageUrl && activeColorSwatch.imageUrl.trim() !== '') {
+      const specificImg = activeColorSwatch.imageUrl.trim();
+      const otherImages = rawImages.filter((img: string) => img !== specificImg);
+      return [specificImg, ...otherImages];
+    }
+    return rawImages.length > 0 ? rawImages : [null];
+  })();
 
   return (
     <>
@@ -161,12 +209,12 @@ export default function ProductDetailsPage() {
 
             {/* ─── Left: Image Stack ─── */}
             <div className="lg:col-span-7 flex flex-col gap-6">
-              {images.map((img: string | null, i: number) => (
-                <div key={i} className="relative w-full aspect-[4/3] md:aspect-square bg-[#F4F4F0] rounded-3xl overflow-hidden group">
+              {displayedImages.map((img: string | null, i: number) => (
+                <div key={img ? `${img}-${i}` : `placeholder-${i}`} className="relative w-full aspect-[4/3] md:aspect-square bg-[#F4F4F0] rounded-3xl overflow-hidden group">
                   {img ? (
                     <img 
                       src={img} 
-                      alt={product.name} 
+                      alt={`${product.name} - ${selectedColor}`} 
                       className="w-full h-full object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105" 
                     />
                   ) : (
@@ -205,28 +253,29 @@ export default function ProductDetailsPage() {
                   )}
                 </div>
 
-                <div className="mb-8">
-                  <ProductAccordion description={product.description} />
-                </div>
-
-                {/* --- NEW: Selection Configuration --- */}
-                <div className="space-y-8 mb-10">
+                {/* --- Selection Configuration (Positioned at TOP right below price) --- */}
+                <div className="space-y-8 mb-8">
                   
                   <ProductTypeSelector selectedType={selectedType} onChange={setSelectedType} />
                   
                   {/* Color Selection */}
                   <div>
-                    <h3 className="font-display font-bold text-xl text-indigo-900 mb-4">Frame Color</h3>
-                    <div className="flex gap-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-display font-bold text-xl text-indigo-900">Frame Color</h3>
+                      <span className="text-xs font-semibold text-indigo-900/60 capitalize tracking-wide">{selectedColor}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-4 items-center">
                       {colorSwatches.map((swatch, idx) => {
                         const isActive = selectedColor === swatch.name;
-                        const isFewLeft = idx === 1; // Mocking "Few Left" for the second option
+                        const isFewLeft = idx === 1;
                         return (
-                          <div key={idx} className="flex flex-col items-center gap-2">
+                          <div key={idx} className="flex flex-col items-center gap-1.5">
                             <button
+                              type="button"
                               onClick={() => setSelectedColor(swatch.name)}
+                              title={swatch.name}
                               className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                                isActive ? 'border-indigo-900' : 'border-transparent hover:border-indigo-900/30'
+                                isActive ? 'border-indigo-900 shadow-md scale-105' : 'border-transparent hover:border-indigo-900/30'
                               }`}
                             >
                               <div 
@@ -234,6 +283,9 @@ export default function ProductDetailsPage() {
                                 style={{ background: swatch.hex }}
                               />
                             </button>
+                            <span className={`text-[10px] tracking-tight text-center max-w-[70px] truncate ${isActive ? 'font-bold text-indigo-900' : 'text-indigo-900/60'}`}>
+                              {swatch.name}
+                            </span>
                             {isFewLeft && (
                               <span className="text-[10px] font-bold text-orange-500 tracking-tight">Few Left</span>
                             )}
@@ -250,7 +302,7 @@ export default function ProductDetailsPage() {
                         <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-900">Predetermined Frame Size</span>
                         <button onClick={() => setMeasure(true)} className="text-[10px] uppercase tracking-wider text-indigo-900/50 underline hover:text-gold-primary transition-colors">Size Guide</button>
                       </div>
-                      <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-indigo-900/10 bg-white">
+                      <div className="inline-flex items-center gap-3 px-5 py-3 rounded-xl border border-indigo-900/10 bg-white shadow-sm">
                         <span className="text-[14px] font-bold text-indigo-900">{product.frameSize}</span>
                         <span className="w-px h-4 bg-indigo-900/10"></span>
                         <span className="text-[10px] uppercase tracking-wider text-indigo-900/60">
@@ -275,10 +327,9 @@ export default function ProductDetailsPage() {
                   )}
 
                 </div>
-                {/* --- END NEW --- */}
 
                 {/* Education triggers */}
-                <div className="grid grid-cols-2 gap-3 mb-10">
+                <div className="grid grid-cols-2 gap-3 mb-8">
                   <button
                     onClick={() => setFaceQuiz(true)}
                     className="flex flex-col items-start p-4 rounded-xl border border-indigo-900/8 bg-white hover:border-gold-primary hover:bg-gold-primary/5 transition-all duration-200 group text-left"
@@ -300,13 +351,13 @@ export default function ProductDetailsPage() {
                 </div>
 
                 {product.frameSize && (
-                  <div className="mb-10">
+                  <div className="mb-8">
                     <FitGuide frameSize={product.frameSize} dimensions={product.dimensions} />
                   </div>
                 )}
 
                 {/* Primary CTA */}
-                <div className="space-y-3 mb-10">
+                <div className="space-y-3 mb-8">
                   {product.requiresPrescription ? (
                     <button
                       onClick={() => setRxOpen(true)}
@@ -341,7 +392,7 @@ export default function ProductDetailsPage() {
                 </div>
 
                 {/* Horizontal Benefits Row */}
-                <div className="grid grid-cols-3 gap-2 border-t border-indigo-900/10 pt-8 mt-10">
+                <div className="grid grid-cols-3 gap-2 border-t border-indigo-900/10 pt-8 mb-8">
                   {[
                     { icon: RotateCcw, title: 'No Questions Asked Returns' },
                     { icon: ShieldCheck, title: 'Easy 14 day Exchange' },
@@ -356,6 +407,11 @@ export default function ProductDetailsPage() {
                       </span>
                     </div>
                   ))}
+                </div>
+
+                {/* Description & Accordions (Positioned below CTA & Benefits) */}
+                <div className="border-t border-indigo-900/10 pt-6">
+                  <ProductAccordion description={product.description} />
                 </div>
               </motion.div>
             </div>
