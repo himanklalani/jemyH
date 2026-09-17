@@ -33,7 +33,7 @@ export default function AdminMarketingPage() {
   }, [activeTab]);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
       
       {/* Header */}
       <div>

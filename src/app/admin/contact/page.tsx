@@ -64,20 +64,20 @@ export default function AdminContactInboxPage() {
   if (loading) return <div className="p-8"><div className="w-8 h-8 rounded-full border-2 border-[var(--color-admin-border)] border-t-[var(--color-gold-primary)] animate-spin mx-auto mt-20"></div></div>;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
       
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <div>
           <h1 className="text-3xl font-serif text-[var(--color-gold-primary)] tracking-tight mb-2">Support Inbox</h1>
           <p className="text-[var(--color-admin-text-muted)] text-sm tracking-wide">Manage customer inquiries and styling requests.</p>
         </div>
         
-        <div className="flex bg-[var(--color-admin-surface)] p-1 rounded-lg border border-[var(--color-admin-border)]">
+        <div className="flex flex-wrap bg-[var(--color-admin-surface)] p-1 rounded-lg border border-[var(--color-admin-border)] self-start">
           {['', 'open', 'replied', 'resolved'].map(status => (
             <button
               key={status}
               onClick={() => setSelectedStatus(status)}
-              className={`px-4 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors ${selectedStatus === status ? 'bg-[var(--color-admin-bg)] text-[var(--color-gold-primary)] shadow' : 'text-[var(--color-admin-text-muted)] hover:text-white'}`}
+              className={`px-3 py-2 rounded-md text-xs font-bold uppercase tracking-widest transition-colors ${selectedStatus === status ? 'bg-[var(--color-admin-bg)] text-[var(--color-gold-primary)] shadow' : 'text-[var(--color-admin-text-muted)] hover:text-white'}`}
             >
               {status || 'All'}
             </button>
@@ -126,7 +126,7 @@ export default function AdminContactInboxPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   <div className="col-span-3 space-y-4">
                     <div className="bg-[var(--color-admin-bg)] border border-[var(--color-admin-border)] p-4 rounded-lg">
                       <p className="text-[var(--color-admin-text)] text-sm whitespace-pre-wrap font-serif leading-relaxed">

@@ -85,7 +85,7 @@ export default function AdminPrescriptionsPage() {
   if (loading) return <div className="p-8"><div className="w-8 h-8 rounded-full border-2 border-[var(--color-admin-border)] border-t-[var(--color-gold-primary)] animate-spin mx-auto mt-20"></div></div>;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 h-full flex flex-col">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 h-full flex flex-col">
       
       {/* Header */}
       <div>
@@ -127,7 +127,7 @@ export default function AdminPrescriptionsPage() {
             <div className="lg:col-span-2 flex flex-col gap-6">
               
               {/* Context Cards */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-[var(--color-admin-surface)] p-5 rounded-2xl border border-[var(--color-admin-border)] flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-[var(--color-admin-bg)] flex items-center justify-center shrink-0 border border-[var(--color-admin-border)]"><User size={16} className="text-[var(--color-gold-primary)]"/></div>
                   <div>

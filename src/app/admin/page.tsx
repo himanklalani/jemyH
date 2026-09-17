@@ -128,7 +128,7 @@ export default function AdminDashboard() {
   const inRevenue = kpis?.revenue?.find((r: any) => r._id === 'IN')?.totalRevenue || 0;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 ease-[var(--ease-power4-out)]">
+    <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700 ease-[var(--ease-power4-out)]">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
