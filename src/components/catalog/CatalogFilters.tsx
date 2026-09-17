@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { X, Check, Filter } from 'lucide-react';
@@ -112,59 +113,54 @@ export default function CatalogFilters() {
     setIsOpen(false);
   };
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const activeFilterCount = Array.from(searchParams.keys()).filter(k => FILTER_CONFIG.some(f => f.id === k)).length;
 
   return (
     <>
-      {/* Desktop Inline Button */}
+      {/* Inline Filter Button (Mobile & Desktop) */}
       <button 
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex relative px-6 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase transition-all duration-300 bg-indigo-900 text-white hover:bg-gold-primary hover:text-indigo-950 items-center gap-3 border border-indigo-900/10 shadow-sm"
+        className="relative px-4 sm:px-6 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase transition-all duration-300 bg-indigo-900 text-white hover:bg-gold-primary hover:text-indigo-950 flex items-center gap-2 sm:gap-3 border border-indigo-900/10 shadow-sm active:scale-95 shrink-0"
+        aria-label={`Open filters${activeFilterCount > 0 ? `, ${activeFilterCount} applied` : ''}`}
       >
+        <Filter size={13} className="shrink-0" />
         <span>Filters</span>
         {activeFilterCount > 0 && (
-          <span className="flex items-center justify-center w-5 h-5 bg-white text-indigo-900 rounded-full text-[10px] shadow-sm">
+          <span className="flex items-center justify-center min-w-[18px] h-4.5 px-1 bg-gold-primary text-indigo-950 font-bold rounded-full text-[9px] shadow-sm">
             {activeFilterCount}
           </span>
         )}
       </button>
 
-      {/* Mobile Sticky FAB */}
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="md:hidden fixed bottom-6 right-6 z-[90] w-14 h-14 rounded-full bg-indigo-900 text-white shadow-2xl flex items-center justify-center border border-white/20 active:scale-95 transition-transform"
-      >
-        <Filter size={20} />
-        {activeFilterCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 bg-gold-primary text-indigo-950 font-bold rounded-full text-[10px] shadow-sm">
-            {activeFilterCount}
-          </span>
-        )}
-      </button>
-
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-indigo-950/20 backdrop-blur-sm z-[100]"
-            />
-            
-            {/* Drawer */}
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#EAEBE6] z-[101] shadow-2xl flex flex-col border-l border-indigo-900/10"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="filters-heading"
-            >
+      {mounted && typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsOpen(false)}
+                className="fixed inset-0 bg-indigo-950/20 backdrop-blur-sm z-[100]"
+              />
+              
+              {/* Drawer */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="fixed top-0 right-0 h-full w-full max-w-sm bg-[#EAEBE6] z-[101] shadow-2xl flex flex-col border-l border-indigo-900/10"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="filters-heading"
+              >
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-indigo-900/10">
                 <h2 id="filters-heading" className="font-display font-bold text-2xl text-indigo-900 uppercase tracking-tight">Filters</h2>
@@ -224,7 +220,9 @@ export default function CatalogFilters() {
             </motion.div>
           </>
         )}
-      </AnimatePresence>
-    </>
-  );
+      </AnimatePresence>,
+      document.body
+    )}
+  </>
+);
 }

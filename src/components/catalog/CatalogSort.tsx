@@ -48,7 +48,7 @@ export default function CatalogSort() {
     <div className="relative" ref={containerRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="relative px-6 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase transition-all duration-300 bg-white text-indigo-900 hover:bg-indigo-900/5 flex items-center gap-3 border border-indigo-900/10 shadow-sm"
+        className="relative px-4 sm:px-6 py-2.5 rounded-full text-[11px] font-bold tracking-widest uppercase transition-all duration-300 bg-white text-indigo-900 hover:bg-indigo-900/5 flex items-center gap-2 sm:gap-3 border border-indigo-900/10 shadow-sm shrink-0 active:scale-95"
       >
         <span className="opacity-50">Sort:</span>
         <span>{activeLabel}</span>

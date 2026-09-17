@@ -321,7 +321,7 @@ export default function ProductsCatalogPage() {
             >
               All Frames
             </h1>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2.5 sm:gap-4 md:gap-6">
               <Link
                 href="/products?category=sunglasses"
                 className="hidden md:inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-indigo-900/50 hover:text-gold-primary transition-colors border-b border-indigo-900/20 pb-0.5 hover:border-gold-primary"

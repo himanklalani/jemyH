@@ -243,7 +243,7 @@ export default function Navbar() {
 
       {/* ─── MOBILE QUICK DOCK (Thumb-zone luxury navigation) ─── */}
       <AnimatePresence>
-        {!isOpen && !pathname?.startsWith('/checkout') && (
+        {!isOpen && !pathname?.startsWith('/checkout') && !pathname?.startsWith('/products') && (
           <motion.div
             initial={{ opacity: 0, y: 20, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
