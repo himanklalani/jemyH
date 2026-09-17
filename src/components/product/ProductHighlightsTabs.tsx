@@ -50,7 +50,7 @@ export default function ProductHighlightsTabs() {
         {/* Left: Content & Tabs */}
         <div className="lg:w-1/2 flex flex-col justify-between order-2 lg:order-1">
           {/* Tabs */}
-          <div className="flex gap-2 mb-10 overflow-x-auto hide-scrollbar pb-2">
+          <div className="flex gap-2 mb-10 overflow-x-auto no-scrollbar pb-2">
             {HIGHLIGHTS.map(tab => {
               const isActive = activeTab === tab.id;
               return (

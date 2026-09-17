@@ -51,7 +51,7 @@ export default function InspirationLooks() {
       {/* Horizontal Scroll Container */}
       <div 
         ref={containerRef}
-        className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-6 lg:px-12 pb-8 hide-scrollbar"
+        className="flex gap-6 overflow-x-auto snap-x snap-mandatory px-6 lg:px-12 pb-8 no-scrollbar"
         style={{ paddingRight: '10vw' }}
       >
         {LOOKS.map((look) => (
