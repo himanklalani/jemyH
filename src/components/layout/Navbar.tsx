@@ -315,13 +315,13 @@ export default function Navbar() {
               exit={{ opacity: 0, scale: 0.9, y: -6, filter: 'blur(6px)' }}
               transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
               style={{ transformOrigin: 'top right' }}
-              className="fixed top-3 md:top-6 right-3.5 md:right-6 z-50 w-[calc(100vw-28px)] max-w-[345px] sm:max-w-[380px] md:w-[90vw] md:max-w-[700px] max-h-[85vh] bg-[#0c0c0c] rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.7)] overflow-hidden border border-white/[0.08] flex flex-col"
+              className="fixed top-3 md:top-5 right-3.5 md:right-6 z-50 w-[calc(100vw-28px)] max-w-[345px] sm:max-w-[380px] md:w-[92vw] md:max-w-[740px] lg:max-w-[780px] max-h-[94vh] bg-[#0c0c0c] rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.7)] overflow-hidden border border-white/[0.08] flex flex-col"
               role="dialog"
               aria-modal="true"
               aria-label="Site navigation"
             >
               {/* Top bar */}
-              <div className="flex items-center justify-between px-6 md:px-8 py-4 md:py-5 border-b border-white/[0.06] shrink-0">
+              <div className="flex items-center justify-between px-6 md:px-7 py-3 md:py-3.5 border-b border-white/[0.06] shrink-0">
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Navigation</span>
                 <div className="flex items-center gap-4 md:gap-6">
                   <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Jemy&#x2122;</span>
@@ -332,18 +332,18 @@ export default function Navbar() {
                     exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
                     transition={{ delay: 0.1, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                     onClick={() => { setIsOpen(false); menuTriggerRef.current?.focus(); }}
-                    className="w-8 h-8 flex items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 active:scale-90 transition-all"
+                    className="w-7 h-7 md:w-8 md:h-8 flex items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 active:scale-90 transition-all"
                     aria-label="Close menu"
                   >
-                    <X size={17} className="md:w-[18px] md:h-[18px]" strokeWidth={1.5} />
+                    <X size={16} className="md:w-[17px] md:h-[17px]" strokeWidth={1.5} />
                   </motion.button>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="flex flex-col md:flex-row overflow-y-auto overscroll-contain">
+              <div className="flex flex-col md:flex-row overflow-y-auto overscroll-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 {/* Left: Links */}
-                <div className="flex-1 px-6 md:px-8 py-3.5 md:py-6">
+                <div className="flex-1 px-6 md:px-7 py-2.5 md:py-3.5">
                   <nav>
                     {MENU_LINKS.map((link, i) => (
                       <motion.div
@@ -351,24 +351,24 @@ export default function Navbar() {
                         initial={{ opacity: 0, x: 12 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 8 }}
-                        transition={{ delay: 0.05 + i * 0.035, duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ delay: 0.04 + i * 0.025, duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <Link
                           href={link.href}
                           onClick={() => setIsOpen(false)}
-                          className="group flex items-center justify-between py-2.5 md:py-4 border-b border-white/[0.06] last:border-0"
+                          className="group flex items-center justify-between py-2 md:py-2.5 lg:py-2.5 border-b border-white/[0.05] last:border-0"
                         >
-                          <div className="flex items-baseline gap-3.5 md:gap-4">
-                            <span className="font-mono text-[10px] text-white/25 group-hover:text-gold-primary/60 transition-colors duration-300 w-4">
+                          <div className="flex items-baseline gap-3 md:gap-3.5">
+                            <span className="font-mono text-[9px] md:text-[10px] text-white/25 group-hover:text-gold-primary/60 transition-colors duration-300 w-4 shrink-0">
                               {link.num}
                             </span>
-                            <span className="font-display text-[1.12rem] sm:text-[1.25rem] md:text-[1.85rem] text-white tracking-[-0.01em] md:tracking-[-0.025em] leading-tight md:leading-none group-hover:text-gold-primary transition-colors duration-300">
+                            <span className="font-display text-[1.08rem] sm:text-[1.18rem] md:text-[1.32rem] lg:text-[1.45rem] text-white tracking-[-0.015em] leading-snug group-hover:text-gold-primary transition-colors duration-300">
                               {link.label}
                             </span>
                           </div>
                           <ArrowUpRight
-                            size={15}
-                            className="text-white/20 group-hover:text-gold-primary transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 md:w-4 md:h-4"
+                            size={14}
+                            className="text-white/20 group-hover:text-gold-primary transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 md:w-[15px] md:h-[15px]"
                           />
                         </Link>
                       </motion.div>
@@ -377,7 +377,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile-only compact quick bar */}
-                <div className="md:hidden px-6 py-3.5 border-t border-white/[0.06] flex items-center justify-between bg-white/[0.02] shrink-0">
+                <div className="md:hidden px-6 py-3 border-t border-white/[0.06] flex items-center justify-between bg-white/[0.02] shrink-0">
                   <button
                     onClick={() => setRegion(region === 'US' ? 'IN' : 'US')}
                     className="font-mono text-[11px] text-white/40 hover:text-white/80 transition-colors"
@@ -396,27 +396,27 @@ export default function Navbar() {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.22, duration: 0.4, ease }}
-                  className="hidden md:flex md:w-[240px] px-8 py-6 md:border-l border-white/[0.06] flex-col justify-between gap-10"
+                  transition={{ delay: 0.18, duration: 0.35, ease }}
+                  className="hidden md:flex md:w-[230px] lg:w-[250px] px-6 lg:px-7 py-3.5 lg:py-4 md:border-l border-white/[0.06] flex-col justify-between gap-4"
                 >
-                  <div className="space-y-7">
+                  <div className="space-y-4">
                     <div>
-                      <p className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] mb-3">Contact</p>
-                      <div className="space-y-2 text-sm text-white/60 leading-relaxed">
+                      <p className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] mb-1.5">Contact</p>
+                      <div className="space-y-1 text-xs text-white/60 leading-relaxed">
                         <a href="mailto:hello@jemy.com" className="font-sans block hover:text-gold-primary transition-colors">
                           hello@jemy.com
                         </a>
-                        <p className="font-mono text-xs">+1 (800) 555-0199</p>
+                        <p className="font-mono text-[11px] text-white/45">+1 (800) 555-0199</p>
                       </div>
-                      <div className="mt-3 font-mono text-[11px] text-white/30 leading-relaxed">
+                      <div className="mt-1.5 font-mono text-[10px] text-white/30 leading-relaxed">
                         <p>123 Optical Ave</p>
                         <p>New York, NY 10012</p>
                       </div>
                     </div>
 
                     <div>
-                      <p className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] mb-3">Follow</p>
-                      <div className="flex flex-col gap-2 font-mono text-[11px] text-white/40">
+                      <p className="text-[10px] font-mono text-white/30 uppercase tracking-[0.2em] mb-1.5">Follow</p>
+                      <div className="flex flex-col gap-1 font-mono text-[10px] text-white/40">
                         <a href="#" className="hover:text-gold-primary transition-colors">Instagram ↗</a>
                         <a href="#" className="hover:text-gold-primary transition-colors">LinkedIn ↗</a>
                         <a href="#" className="hover:text-gold-primary transition-colors">X / Twitter ↗</a>
@@ -424,17 +424,17 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2 pt-1">
                     <button
                       onClick={() => setRegion(region === 'US' ? 'IN' : 'US')}
-                      className="w-full text-left font-mono text-[11px] text-white/30 hover:text-white/60 transition-colors"
+                      className="w-full text-left font-mono text-[10px] text-white/30 hover:text-white/60 transition-colors"
                     >
                       Region: {region === 'US' ? '🇺🇸 USD' : '🇮🇳 INR'} - swap
                     </button>
                     <Link
                       href="/products"
                       onClick={() => setIsOpen(false)}
-                      className="group w-full flex items-center justify-between bg-white text-black px-5 py-3 rounded-xl text-[11px] font-bold uppercase tracking-[0.15em] hover:bg-gold-primary transition-colors duration-300"
+                      className="group w-full flex items-center justify-between bg-white text-black px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-[0.15em] hover:bg-gold-primary transition-colors duration-300"
                     >
                       Shop Frames
                       <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform duration-300" />
