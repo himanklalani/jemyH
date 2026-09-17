@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 
@@ -10,23 +10,6 @@ export default function Preloader() {
   const [counter, setCounter] = useState(0);
 
   if (pathname?.startsWith('/admin')) return null;
-
-  // Skip preloader - high-intent / keyboard users should not be gated (awwwards rule 8)
-  const skip = useCallback(() => {
-    setIsLoading(false);
-    sessionStorage.setItem('jemy_preloader_seen', 'true');
-    document.body.style.overflow = '';
-    document.documentElement.style.overflow = '';
-  }, []);
-
-  // Keyboard shortcut: Esc or Space skips the preloader
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' || e.key === ' ') skip();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [skip]);
 
   // Main preloader timer + counter animation
   useEffect(() => {
@@ -82,8 +65,7 @@ export default function Preloader() {
           initial={{ y: 0 }}
           exit={{ y: '-100%' }}
           transition={{ duration: 1, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[200] pointer-events-auto cursor-pointer"
-          onClick={skip}
+          className="fixed inset-0 z-[200] pointer-events-auto select-none"
           role="presentation"
           aria-hidden="true"
         >
@@ -98,9 +80,8 @@ export default function Preloader() {
               <div className="text-white/40 font-mono text-[10px] uppercase tracking-widest">
                 <span>Est. 2026</span>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <span className="text-white/25 font-mono text-[9px] uppercase tracking-widest">Click or press Esc to skip</span>
-                <span className="text-white/40 font-mono text-[10px] uppercase tracking-widest">Atelier</span>
+              <div className="text-white/40 font-mono text-[10px] uppercase tracking-widest">
+                <span>Atelier</span>
               </div>
             </div>
           </div>

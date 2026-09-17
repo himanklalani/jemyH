@@ -247,44 +247,44 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: 20, x: '-50%' }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-5 left-1/2 z-40 md:hidden flex items-center bg-[#0c0c0c]/90 backdrop-blur-xl border border-white/15 shadow-[0_16px_40px_rgba(0,0,0,0.5)] rounded-full px-2 py-1.5 gap-1 max-w-[92vw]"
+            className="fixed bottom-6 left-1/2 z-40 md:hidden flex items-center justify-between bg-[#0c0c0c]/92 backdrop-blur-2xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.65)] rounded-full px-3.5 py-2 gap-1.5 w-[calc(100vw-36px)] max-w-[365px]"
           >
             <Link
               href="/products?category=sunglasses"
-              className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] text-white hover:text-gold-primary hover:bg-white/10 transition-all flex items-center gap-1.5"
+              className="flex-1 justify-center px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-[0.16em] text-white hover:text-gold-primary hover:bg-white/10 transition-all flex items-center gap-2"
             >
-              <Glasses size={13} className="text-gold-primary" />
+              <Glasses size={16} className="text-gold-primary shrink-0" />
               <span>Sun</span>
             </Link>
 
-            <div className="w-px h-3.5 bg-white/20" />
+            <div className="w-px h-5 bg-white/20 shrink-0" />
 
             <Link
               href="/products?category=eyeglasses"
-              className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.14em] text-white hover:text-gold-primary hover:bg-white/10 transition-all flex items-center gap-1.5"
+              className="flex-1 justify-center px-3 py-2 rounded-full text-[11px] font-bold uppercase tracking-[0.16em] text-white hover:text-gold-primary hover:bg-white/10 transition-all flex items-center gap-2"
             >
-              <Eye size={13} className="text-gold-primary" />
+              <Eye size={16} className="text-gold-primary shrink-0" />
               <span>Optical</span>
             </Link>
 
-            <div className="w-px h-3.5 bg-white/20" />
+            <div className="w-px h-5 bg-white/20 shrink-0" />
 
             <Link
               href="/wishlist"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-gold-primary hover:bg-white/10 transition-colors"
+              className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-white/80 hover:text-gold-primary hover:bg-white/10 transition-colors"
               aria-label="Wishlist"
               title="Wishlist"
             >
-              <Heart size={14} />
+              <Heart size={16} />
             </Link>
 
             <Link
               href="/account"
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white/80 hover:text-gold-primary hover:bg-white/10 transition-colors"
+              className="w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-white/80 hover:text-gold-primary hover:bg-white/10 transition-colors"
               aria-label="Account"
               title="Account"
             >
-              <User size={14} />
+              <User size={16} />
             </Link>
           </motion.div>
         )}
@@ -312,15 +312,15 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.985 }}
               transition={{ duration: 0.32, ease }}
-              className="fixed top-4 md:top-6 right-4 md:right-6 z-50 w-[95vw] md:w-[90vw] max-w-[700px] bg-[#0c0c0c] rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.6)] overflow-hidden border border-white/[0.07]"
+              className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 w-[calc(100vw-28px)] max-w-[345px] sm:max-w-[380px] md:w-[90vw] md:max-w-[700px] max-h-[85vh] bg-[#0c0c0c] rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.7)] overflow-hidden border border-white/[0.08] flex flex-col"
               role="dialog"
               aria-modal="true"
               aria-label="Site navigation"
             >
               {/* Top bar */}
-              <div className="flex items-center justify-between px-8 py-5 border-b border-white/[0.06]">
+              <div className="flex items-center justify-between px-6 md:px-8 py-4 md:py-5 border-b border-white/[0.06] shrink-0">
                 <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Navigation</span>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 md:gap-6">
                   <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Jemy&#x2122;</span>
                   <motion.button
                     ref={menuCloseRef}
@@ -331,40 +331,40 @@ export default function Navbar() {
                     className="w-8 h-8 flex items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all"
                     aria-label="Close menu"
                   >
-                    <X size={18} strokeWidth={1.5} />
+                    <X size={17} className="md:w-[18px] md:h-[18px]" strokeWidth={1.5} />
                   </motion.button>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="flex flex-col md:flex-row">
+              <div className="flex flex-col md:flex-row overflow-y-auto overscroll-contain">
                 {/* Left: Links */}
-                <div className="flex-1 px-8 py-6">
+                <div className="flex-1 px-6 md:px-8 py-3.5 md:py-6">
                   <nav>
                     {MENU_LINKS.map((link, i) => (
                       <motion.div
                         key={link.label}
-                        initial={{ opacity: 0, y: 12 }}
+                        initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        transition={{ delay: 0.08 + i * 0.05, duration: 0.4, ease }}
+                        transition={{ delay: 0.05 + i * 0.03, duration: 0.35, ease }}
                       >
                         <Link
                           href={link.href}
                           onClick={() => setIsOpen(false)}
-                          className="group flex items-center justify-between py-4 border-b border-white/[0.06] last:border-0"
+                          className="group flex items-center justify-between py-2.5 md:py-4 border-b border-white/[0.06] last:border-0"
                         >
-                          <div className="flex items-baseline gap-4">
+                          <div className="flex items-baseline gap-3.5 md:gap-4">
                             <span className="font-mono text-[10px] text-white/25 group-hover:text-gold-primary/60 transition-colors duration-300 w-4">
                               {link.num}
                             </span>
-                            <span className="font-display text-[1.65rem] md:text-[1.85rem] text-white tracking-[-0.025em] leading-none group-hover:text-gold-primary transition-colors duration-300">
+                            <span className="font-display text-[1.12rem] sm:text-[1.25rem] md:text-[1.85rem] text-white tracking-[-0.01em] md:tracking-[-0.025em] leading-tight md:leading-none group-hover:text-gold-primary transition-colors duration-300">
                               {link.label}
                             </span>
                           </div>
                           <ArrowUpRight
-                            size={16}
-                            className="text-white/15 group-hover:text-gold-primary transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                            size={15}
+                            className="text-white/20 group-hover:text-gold-primary transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 md:w-4 md:h-4"
                           />
                         </Link>
                       </motion.div>
@@ -372,12 +372,28 @@ export default function Navbar() {
                   </nav>
                 </div>
 
-                {/* Right: Info */}
+                {/* Mobile-only compact quick bar */}
+                <div className="md:hidden px-6 py-3.5 border-t border-white/[0.06] flex items-center justify-between bg-white/[0.02] shrink-0">
+                  <button
+                    onClick={() => setRegion(region === 'US' ? 'IN' : 'US')}
+                    className="font-mono text-[11px] text-white/40 hover:text-white/80 transition-colors"
+                  >
+                    {region === 'US' ? '🇺🇸 USD' : '🇮🇳 INR'}
+                  </button>
+                  <a
+                    href="mailto:hello@jemy.com"
+                    className="font-mono text-[11px] text-white/40 hover:text-gold-primary transition-colors"
+                  >
+                    hello@jemy.com
+                  </a>
+                </div>
+
+                {/* Desktop Right: Info */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.22, duration: 0.4, ease }}
-                  className="md:w-[240px] px-8 py-6 md:border-l border-white/[0.06] flex flex-col justify-between gap-10"
+                  className="hidden md:flex md:w-[240px] px-8 py-6 md:border-l border-white/[0.06] flex-col justify-between gap-10"
                 >
                   <div className="space-y-7">
                     <div>
