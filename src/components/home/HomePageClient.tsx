@@ -121,31 +121,38 @@ function SectionHeading({ label, title, className = '' }: { label: string; title
       <span className="sr-only">{title.replace(/\\n|\n|\|/g, ' ')}</span>
       <h2
         aria-hidden="true"
-        className="font-display font-bold uppercase leading-[0.9] tracking-[-0.03em] text-[var(--theme-text)] flex flex-wrap"
-        style={{ fontSize: 'clamp(1.25rem, 8vw, 4rem)' }}
+        className="font-display font-bold uppercase leading-[0.92] tracking-[-0.03em] text-[var(--theme-text)] flex flex-col"
+        style={{ fontSize: 'clamp(1.35rem, 5.6vw, 3.75rem)' }}
       >
-        {lines.map((line, lineIndex) => (
-          <span key={lineIndex} className="block flex flex-wrap w-full">
-            {line.split('').map((char, i) => {
-              const currentDelay = charIndex * 0.03;
-              charIndex++;
-              return (
-                <span key={i} className={`inline-block overflow-hidden pb-1 align-bottom ${char === ' ' ? 'w-[0.25em]' : ''}`}>
-                  <span
-                    className="inline-block transition-transform duration-[800ms]"
-                    style={{
-                      transform: visible ? 'translateY(0) rotate(0deg)' : 'translateY(110%) rotate(6deg)',
-                      transitionDelay: `${0.1 + currentDelay}s`,
-                      transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
-                    }}
-                  >
-                    {char === ' ' ? '\u00A0' : char}
-                  </span>
+        {lines.map((line, lineIndex) => {
+          const words = line.trim().split(/\s+/);
+          return (
+            <span key={lineIndex} className="inline-flex flex-wrap items-center gap-x-[0.25em] w-full">
+              {words.map((word, wordIndex) => (
+                <span key={wordIndex} className="inline-flex whitespace-nowrap">
+                  {word.split('').map((char, i) => {
+                    const currentDelay = charIndex * 0.03;
+                    charIndex++;
+                    return (
+                      <span key={i} className="inline-block overflow-hidden pb-1 align-bottom">
+                        <span
+                          className="inline-block transition-transform duration-[800ms]"
+                          style={{
+                            transform: visible ? 'translateY(0) rotate(0deg)' : 'translateY(110%) rotate(6deg)',
+                            transitionDelay: `${0.1 + currentDelay}s`,
+                            transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
+                          }}
+                        >
+                          {char}
+                        </span>
+                      </span>
+                    );
+                  })}
                 </span>
-              );
-            })}
-          </span>
-        ))}
+              ))}
+            </span>
+          );
+        })}
       </h2>
     </div>
   );
@@ -380,11 +387,11 @@ function FeaturedCollection({
   return (
     <section className="py-12 md:py-24">
       <div ref={container} className="max-w-[1600px] mx-auto px-6 lg:px-12">
-        <div className="flex items-end justify-between mb-8 md:mb-16">
-          <SectionHeading label="" title={title} />
+        <div className="flex items-end justify-between mb-8 md:mb-16 gap-3">
+          <SectionHeading label="" title={title} className="flex-1 min-w-0" />
           <Link
             href={link}
-            className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--theme-text)]/50 hover:text-gold-primary transition-colors border-b border-[var(--theme-text)]/20 hover:border-gold-primary pb-1"
+            className="inline-flex items-center gap-1.5 md:gap-2 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] text-[var(--theme-text)]/50 hover:text-gold-primary transition-colors border-b border-[var(--theme-text)]/20 hover:border-gold-primary pb-1 shrink-0 whitespace-nowrap"
           >
             Explore All <ArrowRight size={13} />
           </Link>
