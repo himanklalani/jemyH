@@ -774,6 +774,14 @@ export default function HomePageClient({
               document.body.style.backgroundColor = currentBg;
             }
           },
+          onLeave: () => {
+            // Keep dark bg while scrolling through dark zone
+          },
+          onLeaveBack: () => {
+            if (typeof document !== 'undefined' && document.body) {
+              document.body.style.backgroundColor = '#EAEBE6';
+            }
+          },
         },
       }
     );

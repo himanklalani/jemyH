@@ -80,19 +80,23 @@ export default function ProductReviews({ productId }: { productId: string }) {
         <div className="lg:col-span-1">
           <h2 className="font-display font-bold text-3xl text-indigo-900 mb-6">Customer Reviews</h2>
           
-          <div className="flex items-center gap-4 mb-8">
-            <div className="font-display font-bold text-5xl text-indigo-900">
-              {stats.count > 0 ? stats.average.toFixed(1) : '0.0'}
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="flex text-gold-primary">
-                {[1, 2, 3, 4, 5].map(i => (
-                  <Star key={i} size={16} fill={i <= Math.round(stats.average) ? "currentColor" : "none"} strokeWidth={i <= Math.round(stats.average) ? 0 : 2} />
-                ))}
+          {stats.count > 0 ? (
+            <div className="flex items-center gap-4 mb-8">
+              <div className="font-display font-bold text-5xl text-indigo-900">
+                {stats.average.toFixed(1)}
               </div>
-              <span className="text-[11px] font-semibold uppercase tracking-widest text-indigo-900/50">Based on {stats.count} reviews</span>
+              <div className="flex flex-col gap-1">
+                <div className="flex text-gold-primary">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <Star key={i} size={16} fill={i <= Math.round(stats.average) ? "currentColor" : "none"} strokeWidth={i <= Math.round(stats.average) ? 0 : 2} />
+                  ))}
+                </div>
+                <span className="text-[11px] font-semibold uppercase tracking-widest text-indigo-900/50">Based on {stats.count} review{stats.count !== 1 ? 's' : ''}</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <p className="text-sm text-indigo-900/50 mb-8 leading-relaxed">No reviews yet — be the first to review this frame.</p>
+          )}
 
           <button 
             onClick={() => setIsWriting(!isWriting)}
@@ -138,7 +142,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
 
           <div className="space-y-8">
             {reviews.length === 0 && !isWriting ? (
-              <div className="py-12 text-center text-indigo-900/40 font-semibold">No reviews yet. Be the first to review!</div>
+              <div className="py-12 text-center text-indigo-900/40 font-semibold">Click &ldquo;Write a Review&rdquo; to be the first!</div>
             ) : (
               reviews.map(review => (
                 <div key={review._id} className="bg-white p-6 md:p-8 rounded-2xl border border-indigo-900/5 shadow-sm">
@@ -155,8 +159,9 @@ export default function ProductReviews({ productId }: { productId: string }) {
                   </div>
                   
                   <p className="text-indigo-900/70 text-sm leading-relaxed mb-6 text-pretty">
-                    "{review.comment}"
+                    &ldquo;{review.comment}&rdquo;
                   </p>
+
                   
                   <div className="flex items-center justify-between border-t border-indigo-900/5 pt-4">
                     <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-900/50">

@@ -38,6 +38,13 @@ export default function ProductDetailsPage() {
   const [selectedSize, setSelectedSize]   = useState<string>('');
   const [selectedType, setSelectedType]   = useState<ProductType>('Powered Eyeglass');
 
+  // Reset body background to cream so home-page dark scroll animation doesn't bleed into PDP
+  useEffect(() => {
+    const prev = document.body.style.backgroundColor;
+    document.body.style.backgroundColor = '#EAEBE6';
+    return () => { document.body.style.backgroundColor = prev; };
+  }, []);
+
   useEffect(() => {
     if (!slug) return;
     fetch(`/api/products/${slug}`)
@@ -270,30 +277,30 @@ export default function ProductDetailsPage() {
                       <h3 className="font-display font-bold text-xl text-indigo-900">Frame Color</h3>
                       <span className="text-xs font-semibold text-indigo-900/60 capitalize tracking-wide">{selectedColor}</span>
                     </div>
-                    <div className="flex flex-wrap gap-4 items-center">
+                    <div className="flex gap-3 items-start flex-wrap">
                       {colorSwatches.map((swatch, idx) => {
                         const isActive = selectedColor === swatch.name;
                         const isFewLeft = idx === 1;
                         return (
-                          <div key={idx} className="flex flex-col items-center gap-1.5">
+                          <div key={idx} className="flex flex-col items-center gap-1">
                             <button
                               type="button"
                               onClick={() => setSelectedColor(swatch.name)}
                               title={swatch.name}
-                              className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                                isActive ? 'border-indigo-900 shadow-md scale-105' : 'border-transparent hover:border-indigo-900/30'
+                              className={`w-11 h-11 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                                isActive ? 'border-indigo-900 shadow-md' : 'border-transparent hover:border-indigo-900/30'
                               }`}
                             >
                               <div 
-                                className={`w-9 h-9 rounded-full shadow-sm transition-transform ${isActive ? 'scale-90' : 'scale-100'}`}
+                                className="w-8 h-8 rounded-full shadow-sm"
                                 style={{ background: swatch.hex }}
                               />
                             </button>
-                            <span className={`text-[10px] tracking-tight text-center max-w-[70px] truncate ${isActive ? 'font-bold text-indigo-900' : 'text-indigo-900/60'}`}>
+                            <span className={`text-[9px] tracking-tight text-center w-11 truncate ${isActive ? 'font-bold text-indigo-900' : 'text-indigo-900/50'}`}>
                               {swatch.name}
                             </span>
                             {isFewLeft && (
-                              <span className="text-[10px] font-bold text-orange-500 tracking-tight">Few Left</span>
+                              <span className="text-[9px] font-bold text-orange-500 tracking-tight leading-none">Few Left</span>
                             )}
                           </div>
                         );
@@ -451,12 +458,13 @@ export default function ProductDetailsPage() {
           <ProductHighlightsTabs />
         </div>
       </div>
-      <InspirationLooks />
-      
-      <ProductReviews productId={product._id.toString()} />
-      
-      {/* ─── Similar Products Carousel ─── */}
-      <SimilarProductsCarousel currentSlug={product.slug} />
+      {/* ─── Bottom sections all on cream bg ─── */}
+      <div className="bg-[#EAEBE6]">
+        <InspirationLooks />
+        <ProductReviews productId={product._id.toString()} />
+        {/* ─── Similar Products Carousel ─── */}
+        <SimilarProductsCarousel currentSlug={product.slug} />
+      </div>
     </>
   );
 }
