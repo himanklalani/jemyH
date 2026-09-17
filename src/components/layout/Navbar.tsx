@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { X, Search, ShoppingBag, ArrowRight, ArrowUpRight, Heart, User, Glasses, Eye } from 'lucide-react';
@@ -22,8 +22,10 @@ const MENU_LINKS = [
 const ease = [0.19, 1, 0.22, 1] as const;
 
 export default function Navbar() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { openCart, itemCount } = useCartStore();
   const { region, setRegion } = useRegionStore();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -445,40 +447,106 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* ─── SEARCH OVERLAY ─── */}
+      {/* ─── SEARCH OVERLAY (Compact Luxury Command Modal) ─── */}
       <AnimatePresence>
         {searchOpen && (
-          <motion.div
-            key="search"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="fixed inset-0 z-[60] flex items-start pt-36 justify-center bg-[#EAEBE6]/95 backdrop-blur-xl px-6"
-          >
-            <button
-              onClick={() => setSearchOpen(false)}
-              className="absolute top-8 right-8 text-indigo-900/40 hover:text-indigo-900 transition-colors"
-              aria-label="Close search"
-            >
-              <X size={22} strokeWidth={1.5} />
-            </button>
+          <>
+            {/* Soft backdrop (click to dismiss) */}
             <motion.div
-              initial={{ y: -12, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.06, duration: 0.45, ease }}
-              className="w-full max-w-3xl"
+              key="search-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setSearchOpen(false)}
+              className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm"
+            />
+
+            {/* Floating Compact Search Dialog */}
+            <motion.div
+              key="search-dialog"
+              initial={{ opacity: 0, scale: 0.94, y: -16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.94, y: -16 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-6 md:top-20 left-1/2 -translate-x-1/2 z-[70] w-[calc(100vw-32px)] max-w-[540px] bg-[#0c0c0c] border border-white/15 rounded-2xl shadow-[0_24px_70px_rgba(0,0,0,0.85)] overflow-hidden"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Search catalog"
             >
-              <input
-                autoFocus
-                type="text"
-                placeholder="Search frames, styles…"
-                className="w-full bg-transparent border-0 border-b-2 border-indigo-900/15 focus:border-gold-primary outline-none text-4xl md:text-5xl font-display text-indigo-900 placeholder:text-indigo-900/20 pb-4 transition-colors duration-300"
-                onKeyDown={e => e.key === 'Escape' && setSearchOpen(false)}
-              />
-              <p className="mt-5 text-[10px] font-mono uppercase tracking-[0.2em] text-indigo-900/30">Press Esc to close</p>
+              {/* Form Input Bar */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (searchQuery.trim()) {
+                    setSearchOpen(false);
+                    router.push(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+                  }
+                }}
+                className="flex items-center gap-3 px-5 py-4 border-b border-white/[0.08]"
+              >
+                <Search size={18} className="text-gold-primary shrink-0" />
+                <input
+                  autoFocus
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search frames, sunglasses, materials…"
+                  className="w-full bg-transparent text-sm sm:text-base text-white placeholder:text-white/35 outline-none font-sans"
+                  onKeyDown={(e) => e.key === 'Escape' && setSearchOpen(false)}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="text-white/40 hover:text-white transition-colors text-xs font-mono"
+                  >
+                    Clear
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="px-3 py-1.5 rounded-lg bg-gold-primary text-indigo-950 text-[10px] font-bold uppercase tracking-wider hover:bg-white transition-colors shrink-0 cursor-pointer"
+                >
+                  Search
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(false)}
+                  className="w-7 h-7 flex items-center justify-center rounded-full text-white/40 hover:text-white hover:bg-white/10 transition-all shrink-0 cursor-pointer"
+                  aria-label="Close search"
+                >
+                  <X size={16} />
+                </button>
+              </form>
+
+              {/* Quick Suggestions Bar */}
+              <div className="px-5 py-3.5 bg-white/[0.02]">
+                <p className="text-[10px] font-mono uppercase tracking-[0.18em] text-white/35 mb-2.5">
+                  Popular Searches
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { label: 'Sunglasses', href: '/products?category=sunglasses' },
+                    { label: 'Optical Frames', href: '/products?category=eyeglasses' },
+                    { label: 'Titanium', href: '/products?material=titanium' },
+                    { label: 'Acetate', href: '/products?material=acetate' },
+                    { label: 'Geometric', href: '/products?shape=geometric' },
+                    { label: 'Round', href: '/products?shape=round' },
+                  ].map((tag) => (
+                    <Link
+                      key={tag.label}
+                      href={tag.href}
+                      onClick={() => setSearchOpen(false)}
+                      className="px-2.5 py-1 rounded-full bg-white/5 border border-white/10 hover:border-gold-primary hover:text-gold-primary text-white/70 text-[10px] font-medium tracking-wide transition-all duration-200"
+                    >
+                      {tag.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </motion.div>
-          </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

@@ -99,12 +99,22 @@ function ActiveFilterBadges() {
     }
   });
 
+  const searchVal = searchParams.get('search') || searchParams.get('q');
+  if (searchVal) {
+    activeFilters.push({ key: 'search', value: searchVal, label: `Search: "${searchVal}"` });
+  }
+
   if (activeFilters.length === 0) return null;
 
   const removeFilter = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    const updated = (params.get(key)?.split(',') ?? []).filter(v => v !== value);
-    updated.length === 0 ? params.delete(key) : params.set(key, updated.join(','));
+    if (key === 'search') {
+      params.delete('search');
+      params.delete('q');
+    } else {
+      const updated = (params.get(key)?.split(',') ?? []).filter(v => v !== value);
+      updated.length === 0 ? params.delete(key) : params.set(key, updated.join(','));
+    }
     params.delete('page');
     router.push(`/products?${params.toString()}`, { scroll: false });
   };
@@ -146,6 +156,7 @@ function CatalogGrid() {
   const currentMaterial = searchParams.get('material') || '';
   const currentSize     = searchParams.get('size') || '';
   const currentSort     = searchParams.get('sort') || '';
+  const currentSearch   = searchParams.get('search') || searchParams.get('q') || '';
 
   useEffect(() => {
     setLoading(true);
@@ -156,6 +167,7 @@ function CatalogGrid() {
     if (currentMaterial) params.set('material', currentMaterial);
     if (currentSize)     params.set('size', currentSize);
     if (currentSort)     params.set('sort', currentSort);
+    if (currentSearch)   params.set('search', currentSearch);
 
     fetch(`/api/products?${params.toString()}`)
       .then(r => r.json())
@@ -164,7 +176,7 @@ function CatalogGrid() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [currentShape, currentCategory, currentMaterial, currentSize, currentSort]);
+  }, [currentShape, currentCategory, currentMaterial, currentSize, currentSort, currentSearch]);
 
   const clearAllFilters = () => router.push('/products', { scroll: false });
 

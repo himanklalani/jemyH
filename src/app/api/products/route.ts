@@ -20,6 +20,19 @@ export async function GET(req: NextRequest) {
     // Build the query
     const query: any = { isPublished: { $ne: false } };
 
+    // Search query
+    const search = searchParams.get('search') || searchParams.get('q');
+    if (search) {
+      const sanitized = escapeRegex(search.trim());
+      query.$or = [
+        { name: { $regex: sanitized, $options: 'i' } },
+        { category: { $regex: sanitized, $options: 'i' } },
+        { frameShape: { $regex: sanitized, $options: 'i' } },
+        { frameMaterial: { $regex: sanitized, $options: 'i' } },
+        { tags: { $regex: sanitized, $options: 'i' } },
+      ];
+    }
+
     // Filters
     const category = searchParams.get('category');
     if (category) query.category = category;
