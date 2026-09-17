@@ -200,9 +200,64 @@ function HeroSection({ onQuizOpen, banners }: { onQuizOpen: () => void, banners?
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    // WebKit / iOS Low Power Mode: Ensure properties are explicitly set on DOM element
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', 'true');
+
+    const attemptPlay = () => {
+      if (video && video.paused) {
+        const promise = video.play();
+        if (promise !== undefined) {
+          promise.catch(() => {
+            // Blocked by iOS Low Power Mode until first user interaction
+          });
+        }
+      }
+    };
+
+    // 1. Immediate play attempt
+    attemptPlay();
+
+    // 2. iOS Low Power Mode unlock: first touch/tap or scroll on the page immediately unlocks WebKit playback
+    const unlockEvents: (keyof WindowEventMap)[] = ['touchstart', 'touchend', 'pointerdown', 'click', 'scroll'];
+    const handleInteraction = () => {
+      attemptPlay();
+    };
+
+    unlockEvents.forEach(evt => {
+      window.addEventListener(evt, handleInteraction, { passive: true, once: true });
+    });
+
+    // 3. Tab visibility / returning to viewport
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        attemptPlay();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    // 4. If iOS Low Power Mode tries to pause the video while visible, auto-resume
+    const handlePause = () => {
+      if (!document.hidden) {
+        attemptPlay();
+      }
+    };
+    video.addEventListener('pause', handlePause);
+
+    return () => {
+      unlockEvents.forEach(evt => {
+        window.removeEventListener(evt, handleInteraction);
+      });
+      document.removeEventListener('visibilitychange', handleVisibility);
+      video.removeEventListener('pause', handlePause);
+    };
   }, []);
 
   return (
@@ -211,6 +266,7 @@ function HeroSection({ onQuizOpen, banners }: { onQuizOpen: () => void, banners?
         <video
           ref={videoRef}
           src="https://res.cloudinary.com/kouanazg/video/upload/f_auto,q_auto/v1787487376/Himnak_JEMY_UPscaled_ljkggh.mp4"
+          poster="https://res.cloudinary.com/kouanazg/video/upload/so_0,f_auto,q_auto/v1787487376/Himnak_JEMY_UPscaled_ljkggh.jpg"
           autoPlay
           muted
           loop
