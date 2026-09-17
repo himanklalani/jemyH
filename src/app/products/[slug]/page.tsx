@@ -168,13 +168,6 @@ export default function ProductDetailsPage() {
                       <span className="font-display font-bold text-9xl text-indigo-900/10">J</span>
                     </div>
                   )}
-
-                  {/* Badges on first image */}
-                  {i === 0 && product.requiresPrescription && (
-                    <div className="absolute top-6 left-6 bg-gold-primary text-indigo-950 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg shadow-lg">
-                      Rx Ready
-                    </div>
-                  )}
                 </div>
               ))}
             </div>

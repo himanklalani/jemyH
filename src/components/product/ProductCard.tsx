@@ -46,13 +46,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
           />
         </Link>
-        
-        {/* Prescription Badge */}
-        {product.category === 'eyeglasses' && (
-          <div className="absolute left-3 top-3 rounded bg-gold-primary px-2 py-1 text-[10px] font-bold tracking-widest text-indigo-950 uppercase shadow-sm pointer-events-none">
-            Rx Ready
-          </div>
-        )}
 
         {/* Quick Actions overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full transition-transform duration-300 group-hover:translate-y-0 bg-gradient-to-t from-indigo-950/80 to-transparent">

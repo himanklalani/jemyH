@@ -260,14 +260,11 @@ function CatalogGrid() {
                     )}
 
                     {/* Badges */}
-                    <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                      {product.category === 'eyeglasses' && (
-                        <span className="bg-gold-primary text-indigo-950 text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded">Rx Ready</span>
-                      )}
-                      {product.pricing?.US?.compareAtAmount && (
+                    {product.pricing?.US?.compareAtAmount && (
+                      <div className="absolute top-3 left-3 flex flex-col gap-1.5">
                         <span className="bg-red-500 text-white text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded">Sale</span>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     <div className="absolute inset-x-4 bottom-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-[0.16,1,0.3,1]">
                       <div className="bg-white text-indigo-950 font-bold uppercase tracking-widest text-[10px] py-3 text-center rounded-xl shadow-xl">
