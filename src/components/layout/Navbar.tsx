@@ -133,7 +133,7 @@ export default function Navbar() {
         animate={{ opacity: isOpen ? 0 : 1, scale: isOpen ? 0.95 : 1, y: isOpen ? -4 : 0 }}
         transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
         style={{ pointerEvents: isOpen ? 'none' : 'auto' }}
-        className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 flex items-center bg-white/90 backdrop-blur-md pl-1 md:pl-1.5 pr-1 md:pr-1.5 py-1 md:py-1.5 rounded-full shadow-lg border border-black/5 gap-0.5 md:gap-1"
+        className="fixed top-3.5 md:top-6 right-3.5 md:right-6 z-50 flex items-center bg-white/95 backdrop-blur-xl px-1.5 md:px-2 py-1.5 md:py-2 rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-black/8 gap-1 md:gap-1.5"
       >
         {/* Desktop Sunglasses & Optical collection links (hidden during hero, expands in when scrolled) */}
         <AnimatePresence>
@@ -144,21 +144,21 @@ export default function Navbar() {
               animate={{ opacity: 1, width: 'auto' }}
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="hidden lg:flex items-center gap-1 mr-0.5 overflow-hidden whitespace-nowrap"
+              className="hidden lg:flex items-center gap-1.5 mr-1 overflow-hidden whitespace-nowrap"
             >
               <Link
                 href="/products?category=sunglasses"
-                className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200 shrink-0"
+                className="px-4 h-10 flex items-center text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200 shrink-0"
               >
                 Sunglasses
               </Link>
               <Link
                 href="/products?category=eyeglasses"
-                className="px-3.5 h-9 flex items-center text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200 shrink-0"
+                className="px-4 h-10 flex items-center text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-950/70 hover:text-indigo-950 rounded-full hover:bg-black/5 transition-all duration-200 shrink-0"
               >
                 Optical
               </Link>
-              <div className="w-px h-4 bg-black/10 mx-1 shrink-0" />
+              <div className="w-px h-5 bg-black/10 mx-1 shrink-0" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -166,33 +166,33 @@ export default function Navbar() {
         {/* Search button (all screens) */}
         <button
           onClick={() => setSearchOpen(true)}
-          className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="w-9 h-9 md:w-11 md:h-11 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 active:scale-95 transition-all"
           aria-label="Open search"
           title="Search"
         >
-          <Search size={15} className="md:w-[17px] md:h-[17px]" />
+          <Search size={17} className="md:w-5 md:h-5" />
         </button>
 
         {/* Wishlist button (desktop / tablet) */}
         <Link
           href="/wishlist"
-          className="hidden md:flex w-10 h-10 items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="hidden md:flex w-11 h-11 items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 active:scale-95 transition-all"
           aria-label="Wishlist"
           title="Wishlist"
         >
-          <Heart size={16} />
+          <Heart size={18} />
         </Link>
 
         {/* Cart / Shopping Bag button (all screens) */}
         <button
           onClick={openCart}
-          className="relative w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="relative w-9 h-9 md:w-11 md:h-11 flex items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 active:scale-95 transition-all"
           aria-label={itemCount > 0 ? `Shopping bag, ${itemCount} item${itemCount !== 1 ? 's' : ''}` : 'Shopping bag'}
           title="Cart"
         >
-          <ShoppingBag size={15} className="md:w-[17px] md:h-[17px]" />
+          <ShoppingBag size={17} className="md:w-5 md:h-5" />
           {itemCount > 0 && (
-            <span aria-hidden="true" className="absolute top-1 md:top-1.5 right-1 md:right-1.5 w-3.5 h-3.5 bg-gold-primary text-indigo-950 text-[8px] font-bold flex items-center justify-center rounded-full">
+            <span aria-hidden="true" className="absolute top-0.5 md:top-1 right-0.5 md:right-1 w-4 h-4 md:w-4.5 md:h-4.5 bg-gold-primary text-indigo-950 text-[9px] md:text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm">
               {itemCount}
             </span>
           )}
@@ -201,20 +201,20 @@ export default function Navbar() {
         {/* Account button (desktop / tablet) */}
         <Link
           href="/account"
-          className="hidden md:flex w-10 h-10 items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 transition-colors"
+          className="hidden md:flex w-11 h-11 items-center justify-center rounded-full text-indigo-950 hover:bg-black/5 active:scale-95 transition-all"
           aria-label="Account"
           title="Account"
         >
-          <User size={16} />
+          <User size={18} />
         </Link>
 
         {/* Admin button (strictly verified role in DB) */}
         {isAdmin && (
           <>
-            <div className="hidden sm:block w-px h-4 bg-black/10 mx-0.5" />
+            <div className="hidden sm:block w-px h-5 bg-black/10 mx-0.5" />
             <Link
               href="/admin"
-              className="group flex items-center justify-center px-2.5 sm:px-3.5 h-7 sm:h-9 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[9px] sm:text-[10px] hover:bg-gold-primary hover:text-indigo-950 transition-colors"
+              className="group flex items-center justify-center px-3 sm:px-4 h-8 sm:h-10 rounded-full bg-indigo-900/5 text-indigo-950 font-bold uppercase tracking-wider text-[10px] sm:text-[11px] hover:bg-gold-primary hover:text-indigo-950 transition-colors"
               title="Admin Panel"
             >
               Admin
@@ -222,7 +222,7 @@ export default function Navbar() {
           </>
         )}
 
-        <div className="w-px h-4 bg-black/10 mx-0.5" />
+        <div className="w-px h-5 bg-black/10 mx-0.5" />
 
         {/* Menu button */}
         <button
@@ -230,14 +230,14 @@ export default function Navbar() {
           onClick={() => setIsOpen(true)}
           aria-expanded={isOpen}
           aria-haspopup="dialog"
-          className="group flex items-center gap-1.5 md:gap-2.5 px-3 md:px-5 h-8 md:h-10 rounded-full bg-indigo-950 text-white transition-all duration-300 hover:bg-gold-primary hover:text-indigo-950 active:scale-95 cursor-pointer"
+          className="group flex items-center gap-2 md:gap-3 px-4 md:px-6 h-9 md:h-11 rounded-full bg-indigo-950 text-white transition-all duration-300 hover:bg-gold-primary hover:text-indigo-950 active:scale-95 cursor-pointer shadow-sm"
           aria-label="Open navigation menu"
         >
-          <div className="flex flex-col gap-[3.5px] md:gap-[4.5px] w-3.5 md:w-4" aria-hidden="true">
-            <span className="block h-[1.5px] w-full bg-current rounded-full transition-all duration-300 group-hover:w-3/4" />
-            <span className="block h-[1.5px] w-3/4 bg-current rounded-full transition-all duration-300 group-hover:w-full" />
+          <div className="flex flex-col gap-[4px] md:gap-[5px] w-4 md:w-4.5" aria-hidden="true">
+            <span className="block h-[1.5px] md:h-[2px] w-full bg-current rounded-full transition-all duration-300 group-hover:w-3/4" />
+            <span className="block h-[1.5px] md:h-[2px] w-3/4 bg-current rounded-full transition-all duration-300 group-hover:w-full" />
           </div>
-          <span className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em]">Menu</span>
+          <span className="text-[11px] md:text-[12px] font-bold uppercase tracking-[0.2em]">Menu</span>
         </button>
       </motion.div>
 
